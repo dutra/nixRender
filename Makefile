@@ -3,8 +3,8 @@ C_SOURCES = $(wildcard *.cpp)
 OBJS = $(C_SOURCES:.cpp=.o)
 DEBUG = -g
 CINCLUDE = include/
-CFLAGS = -Wall -I$(CINCLUDE)
-LFLAGS = -Wall $(DEBUG)
+CFLAGS = -Wall -std=c++11 -I$(CINCLUDE)
+LFLAGS = -Wall $(DEBUG) -lGLEW -lGLU -lGL -lsfml-system -lsfml-window
 
 all: main
 
@@ -18,4 +18,5 @@ main: $(OBJS)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -rf main *.o *~
+	rm -rf main *.o *~ \#*\#
+
