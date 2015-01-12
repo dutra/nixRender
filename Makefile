@@ -14,7 +14,7 @@ run: all
 main: $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o main
 
-%.o: %.cpp
+%.o: %.cpp *.h
 	$(CC) $(CFLAGS) -c $<
 
 clean:

@@ -8,9 +8,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "main.h"
+#include "color.h"
 
 int main() {
-  std::cout << "Initializing Rendering procedure" << std::endl;
+  std::cout << intro << "Initializing Rendering procedure" << std::endl;
 
   sf::ContextSettings settings;
   settings.depthBits = 24;
@@ -37,8 +38,8 @@ int main() {
     
     std::clock_t end = std::clock();
     total_elapsed_secs += double(end - begin) / CLOCKS_PER_SEC;
-    if (++frames_counter == 1000) {
-      std::cout << "Avg. drawing time: " << total_elapsed_secs / 1000.0 * 1000 << " ms, FPS: " << 1000 / (total_elapsed_secs / 1000.0 * 1000) << std::endl;
+    if (++frames_counter == FRAMES_COUNTER) {
+      std::cout << reset << "Avg. drawing time: " << blue << total_elapsed_secs / 100.0 * 1000 << reset << " ms, FPS: " << blue << 1.0 / (total_elapsed_secs / 100.0) << std::endl;
       frames_counter = 0;
       total_elapsed_secs = 0;
     }
