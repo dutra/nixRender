@@ -1,3 +1,4 @@
+
 #include "quad.h"
 #include <GL/glew.h>
 #include <SFML/Window.hpp>

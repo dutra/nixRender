@@ -12,16 +12,29 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "color.h"
 
-Shader::Shader(std::string path_vert, std::string path_frag) {
+Shader::Shader(std::string path_vert, std::string path_frag, std::string path_common) {
 
     std::cout << reset << "Loading Vertex Shader " << path_vert << std::endl;
 
+
+    if (!path_common.empty()) { // test if common shader exists
+        std::ifstream input_common(path_common);
+        if (!input_common) {
+            std::cout << error << "ERROR: Failure to open common shader file " << path_common << std::endl;
+            assert(false);
+        }
+    }
+
     std::ifstream input_shader_vert(path_vert);
-    if (!input_shader_vert) {
+    if (!input_shader_vert) { // test if vertice shader exists
         std::cout << error << "ERROR: Failure to open vertice shader " << path_vert << std::endl;
         assert(false);
     }
     std::stringstream str_stream_vert;
+    if (!path_common.empty()) {
+        std::ifstream input_common(path_common);
+        str_stream_vert << input_common.rdbuf();
+    }
     str_stream_vert << input_shader_vert.rdbuf();
     _shader_vert_src = str_stream_vert.str();
 
@@ -32,6 +45,10 @@ Shader::Shader(std::string path_vert, std::string path_frag) {
         assert(false);
     }
     std::stringstream str_stream_frag;
+    if (!path_common.empty()) {
+        std::ifstream input_common(path_common);
+        str_stream_vert << input_common.rdbuf();
+    }
     str_stream_frag << input_shader_frag.rdbuf();
 
     _shader_frag_src = str_stream_frag.str();
@@ -141,4 +158,3 @@ void Shader::bindFragDataLocation(int i, std::string name) {
     std::cout << reset << "Adding FragDataLocation " << name << " to output " << i << std::endl;
 
 }
-

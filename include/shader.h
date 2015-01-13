@@ -7,7 +7,7 @@
 
 class Shader {
 public:
-    Shader(std::string path_vert, std::string path_frag);
+    Shader(std::string path_vert, std::string path_frag, std::string path_common = std::string());
     void compile();
     GLuint getProgram();
     void use();

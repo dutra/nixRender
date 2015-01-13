@@ -11,6 +11,7 @@
 #include "color.h"
 #include "shader.h"
 #include "quad.h"
+#include "frame_buffer.h"
 
 void check_events(sf::Window& window);
 
@@ -34,6 +35,10 @@ int main() {
     shader.compile();
 
     Quad quad;
+    FrameBuffer fbo(WINDOW_WIDTH, WINDOW_HEIGHT);
+    fbo.init();
+    fbo.initDepth();
+
 
     while (window.isOpen()) {
 
@@ -47,12 +52,13 @@ int main() {
 
 
         shader.use();
+        fbo.use();
         quad.draw();
         shader.unuse();
-        
+
         // Swap buffers
         window.display();
-        
+
         std::clock_t end = std::clock();
         total_elapsed_secs += double(end - begin) / CLOCKS_PER_SEC;
         if (++frames_counter == FRAMES_COUNTER) {
