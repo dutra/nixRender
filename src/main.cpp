@@ -49,10 +49,10 @@ int main() {
         shader.use();
         quad.draw();
         shader.unuse();
-
+        
         // Swap buffers
         window.display();
-
+        
         std::clock_t end = std::clock();
         total_elapsed_secs += double(end - begin) / CLOCKS_PER_SEC;
         if (++frames_counter == FRAMES_COUNTER) {

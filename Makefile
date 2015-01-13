@@ -1,23 +1,29 @@
 CC = g++
-C_SOURCES = $(wildcard *.cpp)
-OBJS = $(C_SOURCES:.cpp=.o)
 DEBUG = -g
-CINCLUDE = include/
-HEADERS = $(CINCLUDE)/*.h *.h
+
+CINCLUDE = include
+SRCDIR = src
+OBJDIR = obj
+
+HEADERS = $(wildcard $(CINCLUDE)/*.h)
+C_SOURCES = $(wildcard $(SRCDIR)/*.cpp)
+OBJS = $(C_SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
+
 CFLAGS = -Wall $(DEBUG) -std=c++11 -I$(CINCLUDE)
 LFLAGS = -Wall $(DEBUG) -lGLEW -lGLU -lGL -lsfml-system -lsfml-window
 
 all: main
-
+	@echo "Done!"
 run: all
 	./main
 
 main: $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o main
+	$(CC) $(LFLAGS) $(OBJS) -o $@
+	@echo "Linking complete!"
 
-%.o: %.cpp $(HEADERS)
-	$(CC) $(CFLAGS) -c $<
-
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
 clean:
-	rm -rf main *.o *~ \#*\#
-
+	rm -rf $(OBJS) main *~ \#*\#
+	@echo "Cleanup complete!"
