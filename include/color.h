@@ -1,9 +1,8 @@
-#include <iostream>
 
-/* using intro = magenta; */
-/* using error = red; */
-/* using warning = yellow; */
-/* using info = blue; */
+#ifndef _COLOR_H
+#define _COLOR_H
+
+#include <iostream>
 
 inline std::ostream& blue(std::ostream &s) {
   s << "\x1b[38;2;85;85;255m";
@@ -30,7 +29,25 @@ inline std::ostream& reset(std::ostream &s) {
   return s;
 }
 
-std::ostream& (&intro)(std::ostream&) = magenta;
-std::ostream& (&error)(std::ostream&) = red;
-std::ostream& (&warning)(std::ostream&) = yellow;
-std::ostream& (&info)(std::ostream&) = blue;
+inline std::ostream& error(std::ostream &s) {
+  s << red;
+  return s;
+}
+
+inline std::ostream& warning(std::ostream &s) {
+  s << yellow;
+  return s;
+}
+
+inline std::ostream& info(std::ostream &s) {
+  s << blue;
+  return s;
+}
+
+inline std::ostream& intro(std::ostream &s) {
+  s << magenta;
+  return s;
+}
+
+
+#endif

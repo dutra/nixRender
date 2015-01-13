@@ -3,7 +3,8 @@ C_SOURCES = $(wildcard *.cpp)
 OBJS = $(C_SOURCES:.cpp=.o)
 DEBUG = -g
 CINCLUDE = include/
-CFLAGS = -Wall -std=c++11 -I$(CINCLUDE)
+HEADERS = $(CINCLUDE)/*.h *.h
+CFLAGS = -Wall $(DEBUG) -std=c++11 -I$(CINCLUDE)
 LFLAGS = -Wall $(DEBUG) -lGLEW -lGLU -lGL -lsfml-system -lsfml-window
 
 all: main
@@ -14,7 +15,7 @@ run: all
 main: $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o main
 
-%.o: %.cpp *.h
+%.o: %.cpp $(HEADERS)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
