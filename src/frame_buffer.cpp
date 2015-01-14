@@ -86,3 +86,13 @@ void FrameBuffer::unuse() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, _width, _height);
 }
+
+GLuint FrameBuffer::getTextureID() {
+    return _texture_color;
+
+}
+
+void FrameBuffer::bindTexture(GLuint pos) {
+    glActiveTexture(GL_TEXTURE0 + pos);
+    glBindTexture(GL_TEXTURE_2D, _texture_color);
+}

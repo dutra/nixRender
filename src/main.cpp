@@ -30,15 +30,21 @@ int main() {
     glewExperimental = GL_TRUE;
     glewInit();
 
-    Shader shader("shaders/basic.vert", "shaders/basic.frag");
-    shader.bindFragDataLocation(0, "outColor");
-    shader.compile();
+    Shader first_shader("shaders/basic.vert", "shaders/basic.frag");
+    first_shader.bindFragDataLocation(0, "outColor");
+    first_shader.compile();
+    Shader second_shader("shaders/basic_red.vert", "shaders/basic_red.frag");
+    second_shader.bindFragDataLocation(0, "outColor");
+    second_shader.compile();
+    second_shader.setTextureUniform("texBlue", 0);
+    
 
     Quad quad;
-    shader.use();
-    FrameBuffer fbo(WINDOW_WIDTH, WINDOW_HEIGHT);
-    fbo.init();
     
+    FrameBuffer first_fbo(WINDOW_WIDTH, WINDOW_HEIGHT);
+    first_fbo.init();
+    FrameBuffer second_fbo(WINDOW_WIDTH, WINDOW_HEIGHT);
+    second_fbo.init();
 
     while (window.isOpen()) {
 
@@ -46,9 +52,8 @@ int main() {
 
         // Initialize counter
         std::clock_t begin = std::clock();
-        shader.use();
-        
-        fbo.use();
+        first_shader.use();
+        first_fbo.use();
 
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -56,8 +61,22 @@ int main() {
         
         quad.draw();
         
-        fbo.unuse();
-        shader.unuse();
+        first_fbo.unuse();
+        first_shader.unuse();
+        first_fbo.bindTexture(0);
+        //////////////////////////////////
+
+        second_shader.use();
+        second_fbo.use();
+
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        quad.draw();
+
+        second_fbo.unuse();
+        second_shader.unuse();
+
 
         // Swap buffers
         window.display();

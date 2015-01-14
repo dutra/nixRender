@@ -147,14 +147,16 @@ GLuint Shader::getProgram() {
     return _shader_program;
 }
 
-void Shader::setTextureUniform(std::string name, int value) {
-    glUseProgram(_shader_program);
-    glUniform1i(glGetUniformLocation(_shader_program, name.c_str()), value);
-    glUseProgram(0);
-}
 
 void Shader::bindFragDataLocation(int i, std::string name) {
     _fragDataLocation[i] = name;
     std::cout << reset << "Adding FragDataLocation " << name << " to output " << i << std::endl;
+
+}
+
+void Shader::setTextureUniform(std::string name, GLuint value) {
+    use();
+    glUniform1i(glGetUniformLocation(getProgram(), name.c_str()), value);
+    unuse();
 
 }

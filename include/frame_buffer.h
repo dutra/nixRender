@@ -15,6 +15,9 @@ public:
     ~FrameBuffer();
     void use();
     void unuse();
+    GLuint getTextureID();
+    void bindTexture(GLuint pos);
+
 
 private:
     GLuint _fbo;

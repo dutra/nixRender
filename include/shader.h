@@ -12,10 +12,11 @@ public:
     GLuint getProgram();
     void use();
     void unuse();
-    void setTextureUniform(std::string name, int value);
     void setUniforms();
     void bindFragDataLocation(int i, std::string name);
+    void setTextureUniform(std::string name, GLuint value);
     ~Shader();
+
 private:
     std::string _shader_vert_src;
     std::string _shader_frag_src;
