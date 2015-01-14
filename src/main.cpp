@@ -35,10 +35,10 @@ int main() {
     shader.compile();
 
     Quad quad;
+    shader.use();
     FrameBuffer fbo(WINDOW_WIDTH, WINDOW_HEIGHT);
     fbo.init();
-    fbo.initDepth();
-
+    
 
     while (window.isOpen()) {
 
@@ -46,14 +46,17 @@ int main() {
 
         // Initialize counter
         std::clock_t begin = std::clock();
+        shader.use();
+        
+        fbo.use();
+
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-
-        shader.use();
-        fbo.use();
+        
         quad.draw();
+        
+        fbo.unuse();
         shader.unuse();
 
         // Swap buffers

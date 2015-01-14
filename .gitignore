@@ -56,3 +56,6 @@ tramp
 
 # AUCTeX auto folder
 /auto/
+
+# Visual Studio
+/vs/

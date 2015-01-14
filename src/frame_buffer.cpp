@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include "color.h"
 FrameBuffer::FrameBuffer(int window_width, int window_height)
                                                                                     : _width(window_width), _height(window_height) {
 
@@ -18,7 +18,7 @@ void FrameBuffer::init() {
     // Create texture to hold color buffer
     glGenTextures(1, &_texture_color);
     glBindTexture(GL_TEXTURE_2D, _texture_color);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGB, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16, _width, _height, 0, GL_RGB, GL_FLOAT, nullptr);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -30,20 +30,18 @@ void FrameBuffer::init() {
     // Set the output location for pixels
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
+    // Check that status of our generated frame buffer
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);   
+    if (status != GL_FRAMEBUFFER_COMPLETE) { 
+        std::cout << error << "ERROR: Couldn't create frame buffer" << std::endl; 
+        assert(false);
+    }
+
     // Unbind used resources
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-/*
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _fbo_depth); // Attach the depth buffer fbo_depth to our frame buffer
 
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER); // Check that status of our generated frame buffer
 
-    if (status != GL_FRAMEBUFFER_COMPLETE) { // If the frame buffer does not report back as complete
-        std::cout << red << "ERROR: Couldn't create frame buffer" << std::endl; // Make sure you include <iostream>
-        exit(0); // Exit the application
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-*/
 }
 
 void FrameBuffer::initDepth() {
@@ -81,6 +79,7 @@ FrameBuffer::~FrameBuffer() {
 
 void FrameBuffer::use() {
     glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+    glViewport(0, 0, _width, _height);
 }
 
 void FrameBuffer::unuse() {
