@@ -159,8 +159,25 @@ void Shader::bindFragDataLocation(int i, std::string name) {
 }
 
 void Shader::setTextureUniform(std::string name, GLuint value) {
-    use();
-    glUniform1i(glGetUniformLocation(getProgram(), name.c_str()), value);
-    unuse();
+    
+    GLint loc = glGetUniformLocation(getProgram(), name.c_str());
+    if (loc == -1) {
+        std::cout << error << "ERROR: Texture uniform " << name << " could not be found." << std::endl;
+        assert(false);
+    }
+    glUniform1i(loc, value);
+    
+
+}
+
+GLint Shader::getUniformLocation(std::string name) {
+    
+    GLint loc = glGetUniformLocation(getProgram(), name.c_str());
+    if (loc == -1) {
+        std::cout << error << "ERROR: Uniform " << name << " could not be found." << std::endl;
+        assert(false);
+    }
+    
+    return loc;
 
 }

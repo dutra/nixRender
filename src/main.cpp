@@ -14,6 +14,7 @@
 #include "frame_buffer.h"
 
 void check_events(sf::Window& window);
+void setLayer(Shader shader, int layer, bool enableLayer = false);
 
 int main() {
     std::cout << intro << "Initializing Rendering procedure" << std::endl;
@@ -55,18 +56,38 @@ int main() {
     
     FrameBuffer irradianceFbo(SKY_W, SKY_H);
     irradianceFbo.init();
-    irradiance1Shader.setTextureUniform("transmittanceSampler", 2);
+    
 
     irradiance1Shader.use();
     irradianceFbo.use();
-       
+
+    irradiance1Shader.setTextureUniform("transmittanceSampler", 2);
     transmittanceFbo.bindTexture(2);
     quad.draw();
 
     irradianceFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
     irradiance1Shader.unuse();
 
+    //////////////////////////////////////////////////////////////////////////
+    // Inscatter1R
+    Shader inscatter1RShader("shaders/atmo/std.vert", "shaders/atmo/inscatter1R.frag", "shaders/atmo/common.glsl");
+    inscatter1RShader.bindFragDataLocation(0, "outColor");
+    inscatter1RShader.compile();
 
+    FrameBuffer inscatterFbo(RES_MU_S * RES_NU, RES_MU);
+    inscatterFbo.init();
+    
+    inscatterFbo.use();
+    inscatter1RShader.use();
+    inscatter1RShader.setTextureUniform("transmittanceSampler", 3);
+    transmittanceFbo.bindTexture(3);
+    setLayer(inscatter1RShader, 16);
+    
+    quad.draw();
+
+    inscatterFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    inscatter1RShader.unuse();
+    
 
     while (window.isOpen()) {
 
@@ -93,6 +114,20 @@ int main() {
         }
     }
 
+}
+
+void setLayer(Shader shader, int layer, bool enableLayer) {
+    double r = layer / (RES_R - 1.0);
+    r = r * r;
+    r = sqrt(Rg * Rg + r * (Rt * Rt - Rg * Rg)) + (layer == 0 ? 0.01 : (layer == RES_R - 1 ? -0.001 : 0.0));
+    double dmin = Rt - r;
+    double dmax = sqrt(r * r - Rg * Rg) + sqrt(Rt * Rt - Rg * Rg);
+    double dminp = r - Rg;
+    double dmaxp = sqrt(r * r - Rg * Rg);
+    glUniform1f(shader.getUniformLocation("r"), float(r));
+    glUniform4f(shader.getUniformLocation("dhdH"), float(dmin), float(dmax), float(dminp), float(dmaxp));
+    if (enableLayer)
+        glUniform1i(shader.getUniformLocation("layer"), layer);
 }
 
 void check_events(sf::Window& window) {

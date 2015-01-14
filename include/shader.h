@@ -13,6 +13,7 @@ public:
     void use();
     void unuse();
     void setUniforms();
+    GLint getUniformLocation(std::string name);
     void bindFragDataLocation(int i, std::string name);
     void setTextureUniform(std::string name, GLuint value);
     ~Shader();
