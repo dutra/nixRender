@@ -2,7 +2,7 @@
 in vec3 position;
 out vec2 fUV;
 
-uniform sampler2D texBlue;
+uniform sampler2D transmittanceSampler;
 
 void main() {
     fUV = (position.xy + 1.0) / 2.0;

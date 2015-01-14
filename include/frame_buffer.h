@@ -9,12 +9,12 @@
 
 class FrameBuffer {
 public:
-    FrameBuffer(int window_width, int window_height);
+    FrameBuffer(int width, int height);
     void init();
     void initDepth();
     ~FrameBuffer();
     void use();
-    void unuse();
+    void unuse(int window_width, int window_height);
     GLuint getTextureID();
     void bindTexture(GLuint pos);
 

@@ -23,28 +23,50 @@ int main() {
     settings.stencilBits = 8;
     sf::Window window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "OpenGL", sf::Style::Titlebar | sf::Style::Close, settings);
     // fps counter
-    int frames_counter{ 0 };
-    double total_elapsed_secs{ 0.0 };
+    int frames_counter(0);
+    double total_elapsed_secs(0.0);
 
     // Initialize GLEW
     glewExperimental = GL_TRUE;
     glewInit();
 
-    Shader first_shader("shaders/basic.vert", "shaders/basic.frag");
-    first_shader.bindFragDataLocation(0, "outColor");
-    first_shader.compile();
-    Shader second_shader("shaders/basic_red.vert", "shaders/basic_red.frag");
-    second_shader.bindFragDataLocation(0, "outColor");
-    second_shader.compile();
-    second_shader.setTextureUniform("texBlue", 0);
+    Quad quad;
+
+    //////////////////////////////////////////////////////////////////////////
+    // Transmittance
+    Shader transmittanceShader("shaders/atmo/std.vert", "shaders/atmo/transmittance.frag", "shaders/atmo/common.glsl");
+    transmittanceShader.bindFragDataLocation(0, "outColor");
+    transmittanceShader.compile();
+    FrameBuffer transmittanceFbo(TRANSMITTANCE_W, TRANSMITTANCE_H);
+    transmittanceFbo.init();
+    transmittanceShader.use();
+    transmittanceFbo.use();
+    quad.draw();
+    
+    transmittanceFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    transmittanceShader.unuse();
     
 
-    Quad quad;
+    //////////////////////////////////////////////////////////////////////////
+    // Irradiance1
+    Shader irradiance1Shader("shaders/atmo/std.vert", "shaders/atmo/irradiance1.frag", "shaders/atmo/common.glsl");
+    irradiance1Shader.bindFragDataLocation(0, "outColor");
+    irradiance1Shader.compile();
     
-    FrameBuffer first_fbo(WINDOW_WIDTH, WINDOW_HEIGHT);
-    first_fbo.init();
-    FrameBuffer second_fbo(WINDOW_WIDTH, WINDOW_HEIGHT);
-    second_fbo.init();
+    FrameBuffer irradianceFbo(SKY_W, SKY_H);
+    irradianceFbo.init();
+    irradiance1Shader.setTextureUniform("transmittanceSampler", 2);
+
+    irradiance1Shader.use();
+    irradianceFbo.use();
+       
+    transmittanceFbo.bindTexture(2);
+    quad.draw();
+
+    irradianceFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    irradiance1Shader.unuse();
+
+
 
     while (window.isOpen()) {
 
@@ -52,31 +74,12 @@ int main() {
 
         // Initialize counter
         std::clock_t begin = std::clock();
-        first_shader.use();
-        first_fbo.use();
 
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        quad.draw();
         
-        first_fbo.unuse();
-        first_shader.unuse();
-        first_fbo.bindTexture(0);
-        //////////////////////////////////
-
-        second_shader.use();
-        second_fbo.use();
-
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        quad.draw();
-
-        second_fbo.unuse();
-        second_shader.unuse();
-
 
         // Swap buffers
         window.display();

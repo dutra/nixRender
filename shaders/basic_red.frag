@@ -1,4 +1,3 @@
-#version 130
 
 in vec2 fUV;
 out vec4 outColor;

@@ -11,29 +11,31 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "color.h"
+#include "main.h"
 
 Shader::Shader(std::string path_vert, std::string path_frag, std::string path_common) {
 
     std::cout << reset << "Loading Vertex Shader " << path_vert << std::endl;
-
-
-    if (!path_common.empty()) { // test if common shader exists
+    
+    if (path_common.length() > 0) { // test if common shader exists
         std::ifstream input_common(path_common);
+        
         if (!input_common) {
             std::cout << error << "ERROR: Failure to open common shader file " << path_common << std::endl;
             assert(false);
         }
     }
-
     std::ifstream input_shader_vert(path_vert);
     if (!input_shader_vert) { // test if vertice shader exists
         std::cout << error << "ERROR: Failure to open vertice shader " << path_vert << std::endl;
         assert(false);
     }
+    
     std::stringstream str_stream_vert;
-    if (!path_common.empty()) {
+    str_stream_vert << "#version " << GLSL_VERSION << "\n";
+    if (path_common.length() > 0) {
         std::ifstream input_common(path_common);
-        str_stream_vert << input_common.rdbuf();
+        //str_stream_vert << input_common.rdbuf();
     }
     str_stream_vert << input_shader_vert.rdbuf();
     _shader_vert_src = str_stream_vert.str();
@@ -45,13 +47,15 @@ Shader::Shader(std::string path_vert, std::string path_frag, std::string path_co
         assert(false);
     }
     std::stringstream str_stream_frag;
-    if (!path_common.empty()) {
+    str_stream_frag << "#version " << GLSL_VERSION << "\n";
+    if (path_common.length() > 0) {
         std::ifstream input_common(path_common);
-        str_stream_vert << input_common.rdbuf();
+        str_stream_frag << input_common.rdbuf();
     }
     str_stream_frag << input_shader_frag.rdbuf();
 
     _shader_frag_src = str_stream_frag.str();
+    
 }
 
 void Shader::compile() {
@@ -81,7 +85,7 @@ void Shader::compile() {
 
         //Exit with failure.
         glDeleteShader(_vertex_shader); //Don't leak the shader.
-        return;
+        assert(false);
     }
 
     // Create and compile the fragment shader
@@ -105,7 +109,7 @@ void Shader::compile() {
 
         //Exit with failure.
         glDeleteShader(_fragment_shader); //Don't leak the shader.
-        return;
+        assert(false);
     }
 
     // Link the vertex and fragment shader into a shader program
