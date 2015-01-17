@@ -6,8 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "color.h"
-FrameBuffer::FrameBuffer(int window_width, int window_height)
-                                                                                    : _width(window_width), _height(window_height) {
+FrameBuffer::FrameBuffer(int window_width, int window_height, int layers)
+                        : _width(window_width), _height(window_height), _layers(layers) {
 
 }
 
@@ -42,6 +42,39 @@ void FrameBuffer::init() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
+}
+
+void FrameBuffer::init3d() {
+
+
+
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &_texture_color_3d);
+    glBindTexture(GL_TEXTURE_3D, _texture_color_3d);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16F, _width, _height, _layers, 0, GL_RGB, GL_FLOAT, NULL);
+
+    
+    // Unbind used resources
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+}
+
+void FrameBuffer::drawLayer(int layer) {
+    float *texData = new float[_width * _height * _layers * 3];
+    glActiveTexture(GL_TEXTURE0);
+    bindTexture(0);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, texData);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_3D, _texture_color_3d);
+    glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, layer, _width, _height, 1, GL_RGB, GL_FLOAT, texData);
+    delete[] texData;
 }
 
 void FrameBuffer::initDepth() {

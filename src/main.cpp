@@ -70,23 +70,39 @@ int main() {
 
     //////////////////////////////////////////////////////////////////////////
     // Inscatter1R
+
+    // computes single scattering texture Rayleigh deltaSR (line 3 in algorithm 4.1)
+    //////////////////////////////////////////////////////////////////////////////
+
     Shader inscatter1RShader("shaders/atmo/std.vert", "shaders/atmo/inscatter1R.frag", "shaders/atmo/common.glsl");
     inscatter1RShader.bindFragDataLocation(0, "outColor");
     inscatter1RShader.compile();
 
-    FrameBuffer inscatterFbo(RES_MU_S * RES_NU, RES_MU);
+
+    FrameBuffer inscatterFbo(RES_MU_S * RES_NU, RES_MU, RES_R);
     inscatterFbo.init();
-    
-    inscatterFbo.use();
+    inscatterFbo.init3d();
     inscatter1RShader.use();
     inscatter1RShader.setTextureUniform("transmittanceSampler", 3);
-    transmittanceFbo.bindTexture(3);
-    setLayer(inscatter1RShader, 16);
+    for (int layer = 0; layer < RES_R; layer++) {
     
-    quad.draw();
+        inscatterFbo.use();
+        transmittanceFbo.bindTexture(3);
+        setLayer(inscatter1RShader, layer);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        quad.draw();
+        inscatterFbo.drawLayer(layer);
+        inscatterFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    inscatterFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+        std::cout << "Finished layer " << layer << std::endl;
+        inscatterFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    }
+    
     inscatter1RShader.unuse();
+    
+    ////////////////////////////////////////////////////////////////////////
+
     
 
     while (window.isOpen()) {
