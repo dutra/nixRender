@@ -18,7 +18,7 @@ void FrameBuffer::init() {
     // Create texture to hold color buffer
     glGenTextures(1, &_texture_color);
     glBindTexture(GL_TEXTURE_2D, _texture_color);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16, _width, _height, 0, GL_RGB, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, _width, _height, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -46,8 +46,6 @@ void FrameBuffer::init() {
 
 void FrameBuffer::init3d() {
 
-
-
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &_texture_color_3d);
     glBindTexture(GL_TEXTURE_3D, _texture_color_3d);
@@ -57,7 +55,7 @@ void FrameBuffer::init3d() {
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB16F, _width, _height, _layers, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA16F, _width, _height, _layers, 0, GL_RGBA, GL_FLOAT, NULL);
 
     
     // Unbind used resources
@@ -66,14 +64,14 @@ void FrameBuffer::init3d() {
 }
 
 void FrameBuffer::drawLayer(int layer) {
-    float *texData = new float[_width * _height * _layers * 3];
+    float *texData = new float[_width * _height * _layers * 4];
     glActiveTexture(GL_TEXTURE0);
     bindTexture(0);
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, texData);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, texData);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_3D, _texture_color_3d);
-    glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, layer, _width, _height, 1, GL_RGB, GL_FLOAT, texData);
+    glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, layer, _width, _height, 1, GL_RGBA, GL_FLOAT, texData);
     delete[] texData;
 }
 

@@ -79,28 +79,63 @@ int main() {
     inscatter1RShader.compile();
 
 
-    FrameBuffer inscatterFbo(RES_MU_S * RES_NU, RES_MU, RES_R);
-    inscatterFbo.init();
-    inscatterFbo.init3d();
+    FrameBuffer inscatterFboR(RES_MU_S * RES_NU, RES_MU, RES_R);
+    inscatterFboR.init();
+    inscatterFboR.init3d();
     inscatter1RShader.use();
     inscatter1RShader.setTextureUniform("transmittanceSampler", 3);
     for (int layer = 0; layer < RES_R; layer++) {
     
-        inscatterFbo.use();
+        inscatterFboR.use();
         transmittanceFbo.bindTexture(3);
         setLayer(inscatter1RShader, layer);
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         quad.draw();
-        inscatterFbo.drawLayer(layer);
-        inscatterFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+        inscatterFboR.drawLayer(layer);
+        inscatterFboR.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         std::cout << "Finished layer " << layer << std::endl;
-        inscatterFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+        inscatterFboR.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
     }
     
     inscatter1RShader.unuse();
     
+    //////////////////////////////////////////////////////////////////////////
+    // Inscatter1M
+
+    // computes single scattering texture Mie deltaSM (line 3 in algorithm 4.1)
+    //////////////////////////////////////////////////////////////////////////////
+
+    Shader inscatter1MShader("shaders/atmo/std.vert", "shaders/atmo/inscatter1M.frag", "shaders/atmo/common.glsl");
+    inscatter1MShader.bindFragDataLocation(0, "outColor");
+    inscatter1MShader.compile();
+
+
+    FrameBuffer inscatterFboM(RES_MU_S * RES_NU, RES_MU, RES_R);
+    inscatterFboM.init();
+    inscatterFboM.init3d();
+    inscatter1MShader.use();
+    inscatter1MShader.setTextureUniform("transmittanceSampler", 3);
+    for (int layer = 0; layer < RES_R; layer++) {
+
+        inscatterFboM.use();
+        transmittanceFbo.bindTexture(3);
+        setLayer(inscatter1RShader, layer);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        quad.draw();
+        inscatterFboM.drawLayer(layer);
+        inscatterFboM.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        std::cout << "Finished layer " << layer << std::endl;
+        inscatterFboM.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    }
+
+    inscatter1MShader.unuse();
+
+
+
     ////////////////////////////////////////////////////////////////////////
 
     
