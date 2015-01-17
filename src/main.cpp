@@ -14,7 +14,7 @@
 #include "frame_buffer.h"
 
 void check_events(sf::Window& window);
-void setLayer(Shader shader, int layer, bool enableLayer = false);
+void setLayer(Shader shader, int layer);
 
 int main() {
     std::cout << intro << "Initializing Rendering procedure" << std::endl;
@@ -70,7 +70,6 @@ int main() {
 
     //////////////////////////////////////////////////////////////////////////
     // Inscatter1R
-
     // computes single scattering texture Rayleigh deltaSR (line 3 in algorithm 4.1)
     //////////////////////////////////////////////////////////////////////////////
 
@@ -103,7 +102,6 @@ int main() {
     
     //////////////////////////////////////////////////////////////////////////
     // Inscatter1M
-
     // computes single scattering texture Mie deltaSM (line 3 in algorithm 4.1)
     //////////////////////////////////////////////////////////////////////////////
 
@@ -134,10 +132,45 @@ int main() {
 
     inscatter1MShader.unuse();
 
+    //////////////////////////////////////////////////////////////////////////
+    // Inscatter1Copy
+    // copies deltaS into inscatter texture S (line 5 in algorithm 4.1)
+    //////////////////////////////////////////////////////////////////////////////
+
+    Shader inscatter1CopyShader("shaders/atmo/std.vert", "shaders/atmo/inscatter1Copy.frag", "shaders/atmo/common.glsl");
+    inscatter1CopyShader.bindFragDataLocation(0, "outColor");
+    inscatter1CopyShader.compile();
+
+
+    FrameBuffer inscatterFbo1(RES_MU_S * RES_NU, RES_MU, RES_R);
+    inscatterFbo1.init();
+    inscatterFbo1.init3d();
+    inscatter1CopyShader.use();
+    inscatter1CopyShader.setTextureUniform("deltaSRSampler", 10);
+    inscatter1CopyShader.setTextureUniform("deltaSMSampler", 11);
+    
+    glDisable(GL_BLEND);
+    for (int layer = 0; layer < RES_R; layer++) {
+
+        inscatterFbo1.use();
+        inscatterFboR.bindTexture3d(10);
+        inscatterFboM.bindTexture3d(11);
+        glUniform1i(inscatter1CopyShader.getUniformLocation("layer"), layer);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        quad.draw();
+        inscatterFbo1.drawLayer(layer);
+        inscatterFbo1.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        std::cout << "Finished layer " << layer << std::endl;
+        inscatterFbo1.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    }
+
+    inscatter1CopyShader.unuse();
+
 
 
     ////////////////////////////////////////////////////////////////////////
-
     
 
     while (window.isOpen()) {
@@ -167,7 +200,7 @@ int main() {
 
 }
 
-void setLayer(Shader shader, int layer, bool enableLayer) {
+void setLayer(Shader shader, int layer) {
     double r = layer / (RES_R - 1.0);
     r = r * r;
     r = sqrt(Rg * Rg + r * (Rt * Rt - Rg * Rg)) + (layer == 0 ? 0.01 : (layer == RES_R - 1 ? -0.001 : 0.0));
@@ -177,8 +210,8 @@ void setLayer(Shader shader, int layer, bool enableLayer) {
     double dmaxp = sqrt(r * r - Rg * Rg);
     glUniform1f(shader.getUniformLocation("r"), float(r));
     glUniform4f(shader.getUniformLocation("dhdH"), float(dmin), float(dmax), float(dminp), float(dmaxp));
-    if (enableLayer)
-        glUniform1i(shader.getUniformLocation("layer"), layer);
+    
+        
 }
 
 void check_events(sf::Window& window) {

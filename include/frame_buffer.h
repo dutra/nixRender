@@ -20,6 +20,7 @@ public:
     void unuse(int window_width, int window_height);
     GLuint getTextureID();
     void bindTexture(GLuint pos);
+    void bindTexture3d(GLuint pos);
 
 
 private:

@@ -127,3 +127,7 @@ void FrameBuffer::bindTexture(GLuint pos) {
     glActiveTexture(GL_TEXTURE0 + pos);
     glBindTexture(GL_TEXTURE_2D, _texture_color);
 }
+void FrameBuffer::bindTexture3d(GLuint pos) {
+    glActiveTexture(GL_TEXTURE0 + pos);
+    glBindTexture(GL_TEXTURE_3D, _texture_color_3d);
+}
