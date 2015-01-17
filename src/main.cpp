@@ -54,19 +54,40 @@ int main() {
     irradiance1Shader.bindFragDataLocation(0, "outColor");
     irradiance1Shader.compile();
     
-    FrameBuffer irradianceFbo(SKY_W, SKY_H);
-    irradianceFbo.init();
+    FrameBuffer deltaEFbo(SKY_W, SKY_H);
+    deltaEFbo.init();
     
 
     irradiance1Shader.use();
-    irradianceFbo.use();
+    deltaEFbo.use();
 
     irradiance1Shader.setTextureUniform("transmittanceSampler", 2);
     transmittanceFbo.bindTexture(2);
     quad.draw();
 
-    irradianceFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    deltaEFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
     irradiance1Shader.unuse();
+
+    //////////////////////////////////////////////////////////////////////////
+    // IrradianceCopy
+    Shader irradianceCopyShader("shaders/atmo/std.vert", "shaders/atmo/irradianceCopy.frag", "shaders/atmo/common.glsl");
+    irradianceCopyShader.bindFragDataLocation(0, "outColor");
+    irradianceCopyShader.compile();
+
+    FrameBuffer irradianceFbo(SKY_W, SKY_H);
+    irradianceFbo.init();
+
+    irradianceCopyShader.use();
+    irradianceFbo.use();
+
+    glUniform1f(irradianceCopyShader.getUniformLocation("k"), 0.0);
+    irradianceCopyShader.setTextureUniform("deltaESampler", 2);
+    deltaEFbo.bindTexture(2);
+    quad.draw();
+
+    irradianceFbo.unuse(WINDOW_WIDTH, WINDOW_HEIGHT);
+    irradianceCopyShader.unuse();
+    std::cout << info << "E Texture: " << irradianceFbo.getTextureID() << std::endl;
 
     //////////////////////////////////////////////////////////////////////////
     // Inscatter1R
@@ -167,6 +188,7 @@ int main() {
     }
 
     inscatter1CopyShader.unuse();
+
 
 
 
