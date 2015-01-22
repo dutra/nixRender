@@ -9,7 +9,7 @@ HEADERS = $(wildcard $(CINCLUDE)/*.h)
 C_SOURCES = $(wildcard $(SRCDIR)/*.cpp)
 OBJS = $(C_SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
-CFLAGS = -Wall $(DEBUG) -std=c++11 -I$(CINCLUDE)
+CFLAGS = -Wall $(DEBUG) -std=c++1y -I$(CINCLUDE)
 LFLAGS = -Wall $(DEBUG) -lGLEW -lGLU -lGL -lsfml-system -lsfml-window
 
 all: main
