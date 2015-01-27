@@ -59,3 +59,10 @@ tramp
 
 # Visual Studio
 /vs/
+
+# exec
+main
+
+# Docs
+/doc/html
+/doc/latex
