@@ -11,12 +11,18 @@
 #include "main.h"
 #include "color.h"
 #include "render_system.h"
-#include <experimental/optional>
+#include "world_manager.h"
+#include "world_types.h"
+
 int main() {
     std::clock_t last_time = std::clock();
     RenderSystem rs;
     rs.init();
 //    Quad quad;
+
+    WorldManager wm;
+    wm.addComponent(55, Component::DRAW_COMPONENT);
+
 
 
     while (rs.isWindowOpen()) {

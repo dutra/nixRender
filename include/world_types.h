@@ -1,12 +1,10 @@
 #ifndef WORLD_TYPES_H
 #define WORLD_TYPES_H
 
-enum class Material {
-    RADIOACTIVE
-};
+#include "types.h"
 
-enum class Primitive {
-    CUBE
+enum class Material {
+    WOOD, SAND
 };
 
 typedef struct {
@@ -16,7 +14,15 @@ typedef struct {
 
 typedef struct {
     Material material;
-    Primitive primitive;
 } DrawComponent;
+
+enum class Component {
+    DRAW_COMPONENT = 0x0,
+    STATIC_COMPONENT = 0x01
+};
+
+typedef struct {
+    uuid id;
+} Entity;
 
 #endif /* WORLD_TYPES_H */
