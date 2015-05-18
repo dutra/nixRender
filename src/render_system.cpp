@@ -20,8 +20,10 @@ RenderSystem::RenderSystem() {
     _settings->depthBits = 24;
     _settings->stencilBits = 8;
     _frames_counter = 0;
-    _total_elapsed_secs = 0.0;
+    _t_total = 0.0;
     _window.reset(new sf::Window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "OpenGL", sf::Style::Titlebar | sf::Style::Close, *_settings));
+    _blockShader.reset(new Shader("shaders/block.vert", "shaders/block.frag"));
+    _chunkManager.reset(new ChunkManager(_blockShader));
 }
 
 void RenderSystem::init() {
@@ -32,23 +34,65 @@ void RenderSystem::init() {
     glewExperimental = GL_TRUE;
     glewInit();
 
+    _blockShader->bindFragDataLocation(0, "outColor");
+    _blockShader->compile();
+
+    _blockShader->use();
+
+    // Set up view
+    _view = glm::lookAt(
+    glm::vec3(0.5f, 3, 3.0f), // eye
+    glm::vec3(0.5f, 0.5f, 0.0f), // center
+    glm::vec3(0.0f, 1.0f, 0.0f) // up
+    );
+    GLint uniView = _blockShader->getUniformLocation("view");
+    glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(_view));
+
+    // Set up projection
+    _proj = glm::perspective(FOV, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 20.0f);
+    GLint uniProj = _blockShader->getUniformLocation("proj");
+    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(_proj));
+
+    // Set up model
+    _model = glm::mat4();
+    GLint uniModel = _blockShader->getUniformLocation("model");
+    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(_model));
+
+    _chunkManager->init();
+
+
 }
 
 void RenderSystem::update(double delta_t) {
+
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+    // use shader
+    _blockShader->use();
+
+    // render all components
+    _chunkManager->render();
+
+    _blockShader->unuse();
+
+    _window->display();
+
+
     check_events();
-
-
     countFPS(delta_t);
 }
 
 void RenderSystem::countFPS(double delta_t) {
-    _total_elapsed_secs += delta_t;
+    _t_total += delta_t;
 
     if (++_frames_counter == FRAMES_COUNTER) {
-        std::cout << reset << "Avg. drawing time: " << blue << _total_elapsed_secs / FRAMES_COUNTER * 1000
-        << reset << " ms, FPS: " << blue << 1.0 / (_total_elapsed_secs / FRAMES_COUNTER) << reset << "." << std::endl;
+        std::cout << reset << "Avg. drawing time: " << blue << _t_total / FRAMES_COUNTER
+        << reset << " ms, FPS: " << blue << 1.0 / (_t_total / FRAMES_COUNTER)*1000 << reset << "." << std::endl;
         _frames_counter = 0;
-        _total_elapsed_secs = 0.0;
+        _t_total = 0.0;
     }
 }
 

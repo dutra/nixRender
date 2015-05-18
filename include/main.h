@@ -1,8 +1,15 @@
+#include "types.h"
 
-#define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 900
-#define FRAMES_COUNTER 100000
-#define GLSL_VERSION 130
+#define WINDOW_WIDTH 1600.0f
+#define WINDOW_HEIGHT 900.0f
+#define FOV 65.0f
+const uint32 FRAMES_COUNTER = 600;
+#define GLSL_VERSION 440
+
+#define CHUNK_SIZE_X 1
+#define CHUNK_SIZE_Y 1
+#define CHUNK_SIZE_Z 1
+#define CHUNK_VOLUME_SIZE CHUNK_SIZE_X*CHUNK_SIZE_Y*CHUNK_SIZE_Z
 
 const float Rg = 6360.0;
 const float Rt = 6420.0;

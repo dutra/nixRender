@@ -1,5 +1,5 @@
 #include <iostream>
-#include <ctime>
+#include <chrono>
 #include <fstream>
 #include <GL/glew.h>
 #include <SFML/Window.hpp>
@@ -15,7 +15,7 @@
 #include "world_types.h"
 
 int main() {
-    std::clock_t last_time = std::clock();
+    auto t_last = std::chrono::high_resolution_clock::now();
     RenderSystem rs;
     rs.init();
 //    Quad quad;
@@ -23,13 +23,14 @@ int main() {
     WorldManager wm;
     wm.addComponent(55, Component::DRAW_COMPONENT);
 
-
+    std::cout << "GL_MAX_TEXTURE_SIZE" << GL_MAX_TEXTURE_SIZE << std::endl;
+    std::cout << "GL_MAX_ARRAY_TEXTURE_LAYERS" << GL_MAX_ARRAY_TEXTURE_LAYERS << std::endl;
 
     while (rs.isWindowOpen()) {
-        std::clock_t current = std::clock();
-        double elapsed_secs = double(current - last_time) / CLOCKS_PER_SEC;
+        auto t_current = std::chrono::high_resolution_clock::now();
+        double delta_t = std::chrono::duration<double, std::milli>(t_current-t_last).count();
 
-        rs.update(elapsed_secs);
+        rs.update(delta_t);
 
         // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         //
@@ -40,7 +41,7 @@ int main() {
         // Swap buffers
         //window.display();
 
-        last_time = std::clock();
+        t_last = t_current;
 
     }
 

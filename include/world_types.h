@@ -25,4 +25,8 @@ typedef struct {
     uuid id;
 } Entity;
 
+typedef struct {
+    float x, y, z;
+} Vertex;
+
 #endif /* WORLD_TYPES_H */

@@ -11,7 +11,8 @@ typedef unsigned int uint32;
 typedef long long int64;
 typedef unsigned long long uint64;
 
-
+// game specific types
 typedef uint32 uuid;
+typedef uint32 Position;
 
 #endif /* TYPES_H */

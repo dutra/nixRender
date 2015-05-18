@@ -1,17 +1,17 @@
 #ifndef QUAD_H
 #define QUAD_H
 
+#include "shader.h"
+
 #include <GL/glew.h>
 #include <string>
 #include <vector>
-#include "shader.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-typedef struct {
-    float x, y, z;
-} Vertex;
+#include "world_types.h"
 
 class Quad {
 

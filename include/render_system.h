@@ -14,6 +14,8 @@
 #include "color.h"
 #include "shader.h"
 #include "frame_buffer.h"
+#include "chunk_manager.h"
+#include "types.h"
 
 class RenderSystem {
 public:
@@ -25,12 +27,16 @@ public:
 
     ~RenderSystem();
 private:
-    int _frames_counter;
-    double _total_elapsed_secs;
+    uint64 _frames_counter;
+    double _t_total;
     std::unique_ptr<sf::ContextSettings> _settings;
     std::unique_ptr<sf::Window> _window;
     void check_events();
     void countFPS(double delta_t);
+    std::shared_ptr<Shader> _blockShader;
+    std::unique_ptr<ChunkManager> _chunkManager;
+
+    glm::mat4 _view, _proj, _model;
 };
 
 

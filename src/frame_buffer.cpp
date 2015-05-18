@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "color.h"
+
 FrameBuffer::FrameBuffer(int window_width, int window_height, int layers)
 : _width(window_width), _height(window_height), _layers(layers) {
     _texture_color_3d = 0;

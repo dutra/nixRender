@@ -2,6 +2,8 @@
 #define OPTIONAL_VECTOR_H
 
 #include <vector>
+#include <functional>
+
 #include "types.h"
 
 #define NULL_ENTRY 0
@@ -17,7 +19,7 @@ class OptionalVector {
 public:
     OptionalVector();
     ~OptionalVector();
-    std::size_t add(T new_element);
+    std::size_t add(T new_element, std::function<void(T&, std::size_t id)> func);
     std::size_t insert(T new_element, std::size_t index);
     T& operator[](uint32 index);
 
@@ -65,8 +67,9 @@ std::size_t OptionalVector<T>::insert(T new_element, std::size_t index) {
 }
 
 template<class T>
-std::size_t OptionalVector<T>::add(T new_element) {
+std::size_t OptionalVector<T>::add(T new_element, std::function<void(T&, std::size_t id)> func) {
     if (_entries.size() == 1) {
+        func(new_element, 1);
         OptionalEntry<T> new_entry;
         new_entry.id = 1;
         new_entry.data = new_element;
@@ -77,8 +80,10 @@ std::size_t OptionalVector<T>::add(T new_element) {
     for (auto it = _entries.begin() + 1; it != _entries.end(); ++it) {
         if (it->id == 0) {
             std::size_t index = it - _entries.begin();
+            func(new_element, index);
             it->id = index;
             it->data = new_element;
+
             return index;
         }
     }
@@ -89,11 +94,11 @@ template<class T>
 T& OptionalVector<T>::operator[](uint32 index) {
     if (index >= _entries.size())
         return nullptr;
-    T element = _entries[index];
-    if (element.id > 0){
-        return element.data;
-    } else {
+    OptionalEntry<T> entry = _entries[index];
+    if (entry.id == 0){
         return nullptr;
+    } else {
+        return entry.data;
     }
 }
 

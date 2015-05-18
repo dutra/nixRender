@@ -131,7 +131,7 @@ void Shader::compile() {
 void Shader::use() {
     if (glGetError() != GL_NO_ERROR) {
         std::cout << error << "ERROR: Shader::use glGetError" << std::endl;
-        //assert(false);
+        assert(false);
     }
     glUseProgram(_shader_program);
 }
