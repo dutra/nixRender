@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "color.h"
 #include "main.h"
+#include "error.h"
 
 Shader::Shader(std::string path_vert, std::string path_frag, std::string path_common) {
 
@@ -55,6 +56,7 @@ Shader::Shader(std::string path_vert, std::string path_frag, std::string path_co
     str_stream_frag << input_shader_frag.rdbuf();
 
     _shader_frag_src = str_stream_frag.str();
+    glCheckError();
 
 }
 
@@ -116,24 +118,25 @@ void Shader::compile() {
     _shader_program = glCreateProgram();
     glAttachShader(_shader_program, _vertex_shader);
     glAttachShader(_shader_program, _fragment_shader);
+    glCheckError();
 
     for (auto m : _fragDataLocation) {
         glBindFragDataLocation(_shader_program, m.first, m.second.c_str());
+        glCheckError();
         //std::cout << reset << "Binding FragDataLocation " << m.second << std::endl;
     }
 
     glLinkProgram(_shader_program);
 
+    glCheckError();
     //std::cout << info << "Done compiling Shader" << std::endl;
 }
 
 
 void Shader::use() {
-    if (glGetError() != GL_NO_ERROR) {
-        std::cout << error << "ERROR: Shader::use glGetError" << std::endl;
-        assert(false);
-    }
+    glCheckError();
     glUseProgram(_shader_program);
+    glCheckError();
 }
 
 void Shader::setUniforms() {
@@ -141,17 +144,15 @@ void Shader::setUniforms() {
 }
 
 void Shader::unuse() {
-    if (glGetError() != GL_NO_ERROR) {
-        std::cout << error << "ERROR: Shader::unuse glGetError" << std::endl;
-        //assert(false);
-    }
-//    glUseProgram(0);
+    //glUseProgram(0);
+    glCheckError();
 }
 
 Shader::~Shader() {
     glDeleteProgram(_shader_program);
     glDeleteShader(_vertex_shader);
     glDeleteShader(_fragment_shader);
+    glCheckError();
 }
 
 

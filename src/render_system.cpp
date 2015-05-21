@@ -14,6 +14,9 @@
 #include "shader.h"
 #include "quad.h"
 #include "frame_buffer.h"
+#include "gbuffer.h"
+#include "chunk_manager.h"
+#include "error.h"
 
 RenderSystem::RenderSystem() {
     _settings.reset(new sf::ContextSettings());
@@ -22,8 +25,10 @@ RenderSystem::RenderSystem() {
     _frames_counter = 0;
     _t_total = 0.0;
     _window.reset(new sf::Window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "OpenGL", sf::Style::Titlebar | sf::Style::Close, *_settings));
-    _blockShader.reset(new Shader("shaders/block.vert", "shaders/block.frag"));
-    _chunkManager.reset(new ChunkManager(_blockShader));
+//    _blockShader.reset(new Shader("shaders/block.vert", "shaders/block.frag"));
+    _geometry_shader.reset(new Shader("shaders/deferred/geometry.vert", "shaders/deferred/geometry.frag"));
+    _chunkManager.reset(new ChunkManager());
+    _gbuffer.reset(new GBuffer(WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 
 void RenderSystem::init() {
@@ -34,52 +39,61 @@ void RenderSystem::init() {
     glewExperimental = GL_TRUE;
     glewInit();
 
-    _blockShader->bindFragDataLocation(0, "outColor");
-    _blockShader->compile();
+    _geometry_shader->bindFragDataLocation(0, "OutWorldPos");
+    _geometry_shader->bindFragDataLocation(1, "OutDiffuse");
+    _geometry_shader->bindFragDataLocation(2, "OutNormal");
+    _geometry_shader->bindFragDataLocation(3, "OutTexCoord");
+    _geometry_shader->compile();
+    _geometry_shader->use();
 
-    _blockShader->use();
+    _gbuffer->init();
 
     // Set up view
     _view = glm::lookAt(
-    glm::vec3(0.5f, 3, 3.0f), // eye
-    glm::vec3(0.5f, 0.5f, 0.0f), // center
+    glm::vec3(2.0f, 2.0f, 3.0f), // eye
+    glm::vec3(0.0f, 0.0f, 0.0f), // center
     glm::vec3(0.0f, 1.0f, 0.0f) // up
     );
-    GLint uniView = _blockShader->getUniformLocation("view");
+    GLint uniView = _geometry_shader->getUniformLocation("view");
     glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(_view));
-
+    
     // Set up projection
-    _proj = glm::perspective(FOV, WINDOW_WIDTH / WINDOW_HEIGHT, 1.0f, 20.0f);
-    GLint uniProj = _blockShader->getUniformLocation("proj");
+    _proj = glm::perspective(FOV, ((float)WINDOW_WIDTH) / ((float)WINDOW_HEIGHT), 1.0f, 20.0f);
+    GLint uniProj = _geometry_shader->getUniformLocation("proj");
     glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(_proj));
-
+    
     // Set up model
-    _model = glm::mat4();
-    GLint uniModel = _blockShader->getUniformLocation("model");
-    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(_model));
-
+    _world = glm::mat4();
+    GLint uniModel = _geometry_shader->getUniformLocation("world");
+    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(_world));
+    
     _chunkManager->init();
-
-
+    
+    _geometry_shader->unuse();
+    
+    glCheckError();
 }
 
 void RenderSystem::update(double delta_t) {
-
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    // use shader
+    _geometry_shader->use();
+    // use geometry buffer
+    _gbuffer->use();
+    
+    glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-    // use shader
-    _blockShader->use();
+    
+    glEnable(GL_DEPTH_TEST);
 
     // render all components
     _chunkManager->render();
 
-    _blockShader->unuse();
+    //_blockShader->unuse();
+    _gbuffer->unuse();
+    _geometry_shader->unuse();
 
     _window->display();
-
 
     check_events();
     countFPS(delta_t);

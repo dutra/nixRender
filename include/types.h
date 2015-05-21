@@ -2,7 +2,7 @@
 #define TYPES_H
 
 // Explicitly-sized versions of integer types
-typedef __signed char int8;
+typedef signed char int8;
 typedef unsigned char uint8;
 typedef short int16;
 typedef unsigned short uint16;

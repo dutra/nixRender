@@ -16,6 +16,7 @@
 #include "frame_buffer.h"
 #include "chunk_manager.h"
 #include "types.h"
+#include "gbuffer.h"
 
 class RenderSystem {
 public:
@@ -33,10 +34,11 @@ private:
     std::unique_ptr<sf::Window> _window;
     void check_events();
     void countFPS(double delta_t);
-    std::shared_ptr<Shader> _blockShader;
+    //std::shared_ptr<Shader> _blockShader;
+    std::shared_ptr<Shader> _geometry_shader;
     std::unique_ptr<ChunkManager> _chunkManager;
-
-    glm::mat4 _view, _proj, _model;
+    std::unique_ptr<GBuffer> _gbuffer;
+    glm::mat4 _view, _proj, _world;
 };
 
 

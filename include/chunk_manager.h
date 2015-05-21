@@ -22,7 +22,7 @@ typedef struct {
 class ChunkManager {
 
 public:
-    ChunkManager(std::shared_ptr<Shader> shader);
+    ChunkManager();
     ~ChunkManager();
 
     void init();
@@ -30,7 +30,6 @@ public:
     void render();
 
 private:
-    std::shared_ptr<Shader> _shader;
     std::unique_ptr<Chunk> _chunks;
     GLuint _vao;
     GLuint _vbo;
