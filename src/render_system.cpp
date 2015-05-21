@@ -16,6 +16,7 @@
 #include "frame_buffer.h"
 #include "gbuffer.h"
 #include "chunk_manager.h"
+#include "cube.h"
 #include "error.h"
 
 RenderSystem::RenderSystem() {
@@ -28,6 +29,7 @@ RenderSystem::RenderSystem() {
 //    _blockShader.reset(new Shader("shaders/block.vert", "shaders/block.frag"));
     _geometry_shader.reset(new Shader("shaders/deferred/geometry.vert", "shaders/deferred/geometry.frag"));
     _chunkManager.reset(new ChunkManager());
+    _cube.reset(new Cube());
     _gbuffer.reset(new GBuffer(WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 
@@ -68,6 +70,7 @@ void RenderSystem::init() {
     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(_world));
     
     _chunkManager->init();
+    _cube->init();
     
     _geometry_shader->unuse();
     
@@ -87,7 +90,8 @@ void RenderSystem::update(double delta_t) {
     glEnable(GL_DEPTH_TEST);
 
     // render all components
-    _chunkManager->render();
+    //_chunkManager->render();
+    _cube->render();
 
     //_blockShader->unuse();
     _gbuffer->unuse();

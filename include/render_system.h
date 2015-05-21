@@ -17,6 +17,7 @@
 #include "chunk_manager.h"
 #include "types.h"
 #include "gbuffer.h"
+#include "cube.h"
 
 class RenderSystem {
 public:
@@ -39,6 +40,7 @@ private:
     std::unique_ptr<ChunkManager> _chunkManager;
     std::unique_ptr<GBuffer> _gbuffer;
     glm::mat4 _view, _proj, _world;
+    std::unique_ptr<Cube> _cube;
 };
 
 
