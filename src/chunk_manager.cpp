@@ -11,7 +11,7 @@ ChunkManager::ChunkManager() {
     _chunks.reset(new Chunk);
 
     _chunks->blocks.reset(new Block [CHUNK_SIZE_X*CHUNK_SIZE_Y*CHUNK_SIZE_Z]);
-    _texture = new Texture(15*15*15, 1, GL_TEXTURE_1D_ARRAY);
+    //_texture = new Texture(15*15*15, 1, GL_TEXTURE_1D_ARRAY);
 }
 
 void ChunkManager::init() {

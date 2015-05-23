@@ -19,11 +19,12 @@ public:
     void draw();
     Quad();
     ~Quad();
+    void init();
 
 private:
     GLuint _vao;
     GLuint _vbo;
-    std::vector<Vertex> _vertices;
+    std::vector<VertexQuad> _vertices;
 
 };
 

@@ -3,8 +3,8 @@
 #define WINDOW_WIDTH 1600u
 #define WINDOW_HEIGHT 900u
 #define FOV 65.0f
-const uint32 FRAMES_COUNTER = 600;
-#define GLSL_VERSION 440
+const uint32 FRAMES_COUNTER = 3000;
+#define GLSL_VERSION 400
 
 #define CHUNK_SIZE_X 1
 #define CHUNK_SIZE_Y 1

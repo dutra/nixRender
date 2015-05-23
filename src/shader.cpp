@@ -144,7 +144,7 @@ void Shader::setUniforms() {
 }
 
 void Shader::unuse() {
-    //glUseProgram(0);
+    glUseProgram(0);
     glCheckError();
 }
 
@@ -197,15 +197,15 @@ void Shader::setTextureUniform(std::string name, GLuint value) {
             std::cout << "An attempt has been made to perform an operation that would cause an internal stack to overflow." << std::endl;
             break;
         }
-    //        assert(false);
+            assert(false);
     }
 
     if (loc == -1) {
         std::cout << error << "ERROR: Texture uniform " << name << " could not be found." << std::endl;
         return;
-        //assert(false);
+        assert(false);
     }
-    glUniform1i(loc, value);
+    glProgramUniform1i(getProgram(), loc, value);
 
 
 }

@@ -18,6 +18,7 @@
 #include "types.h"
 #include "gbuffer.h"
 #include "cube.h"
+#include "quad.h"
 
 class RenderSystem {
 public:
@@ -37,10 +38,12 @@ private:
     void countFPS(double delta_t);
     //std::shared_ptr<Shader> _blockShader;
     std::shared_ptr<Shader> _geometry_shader;
+    std::shared_ptr<Shader> _lighting_shader;
     std::unique_ptr<ChunkManager> _chunkManager;
     std::unique_ptr<GBuffer> _gbuffer;
     glm::mat4 _view, _proj, _world;
     std::unique_ptr<Cube> _cube;
+    std::unique_ptr<Quad> _quad;
 };
 
 

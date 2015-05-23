@@ -5,9 +5,9 @@
 
 class Texture {
 public:
-    Texture(int window_width, int window_height, GLint texture_type = GL_TEXTURE_2D);
+    Texture(GLint texture_type = GL_TEXTURE_2D, char * image = nullptr);
     ~Texture();
-    void init(GLint internalFormat, GLint format, GLint type);
+    void init(GLint internalFormat, GLint format, GLint type, int width = 0, int height = 0);
     void bind(GLuint pos);
     GLuint getID();
 
@@ -16,6 +16,7 @@ private:
     int _width, _height;
     GLint _texture_type;
     GLint _internalFormat, _format, _type;
+    const char * _image;
 };
 
 #endif

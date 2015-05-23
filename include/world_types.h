@@ -26,7 +26,14 @@ typedef struct {
 } Entity;
 
 typedef struct {
-    float x, y, z;
+    float x, y, z; // position
+    float nx, ny, nz; // normal
+    float fU, fV; // texture
 } Vertex;
+
+typedef struct {
+    float x, y, z; // position
+    float fU, fV; // texture
+} VertexQuad;
 
 #endif /* WORLD_TYPES_H */

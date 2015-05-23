@@ -9,6 +9,7 @@
 #include "world_types.h"
 #include "shader.h"
 #include "texture.h"
+#include "shader.h"
 
 class Cube {
 
@@ -17,14 +18,14 @@ public:
     ~Cube();
 
     void init();
-    void recreateBlocks();
-    void render();
+    void recreate_blocks();
+    void render(std::shared_ptr<Shader> shader);
 
 private:
     GLuint _vao;
     GLuint _vbo;
     std::vector<Vertex> _vertices;
-    Texture * _texture;
+    std::unique_ptr<Texture> _texture_color, _texture_normal;
 };
 
 #endif

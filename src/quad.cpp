@@ -25,15 +25,25 @@ void Quad::draw() {
 }
 
 Quad::Quad() {
+}
+
+Quad::~Quad() {
+    glDeleteBuffers(1, &_vbo);
+    glDeleteVertexArrays(1, &_vao);
+
+}
+
+
+void Quad::init() {
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
 
-    _vertices.push_back(Vertex{ -1.0f, 1.0f, 0.0f  });
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f   });
-    _vertices.push_back(Vertex{ 1.0f, -1.0f, 0.0f  });
-    _vertices.push_back(Vertex{ 1.0f, -1.0f, 0.0f  });
-    _vertices.push_back(Vertex{ -1.0f, -1.0f, 0.0f });
-    _vertices.push_back(Vertex{ -1.0f, 1.0f, 0.0f  });
+    _vertices.push_back(VertexQuad{ -1.0f, 1.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(VertexQuad{ 1.0f, 1.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(VertexQuad{ 1.0f, -1.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(VertexQuad{ 1.0f, -1.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(VertexQuad{ -1.0f, -1.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(VertexQuad{ -1.0f, 1.0f, 0.0f, 0.0f, 1.0f });
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
@@ -42,11 +52,23 @@ Quad::Quad() {
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+    // position
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, // index
+        3, // size
+        GL_FLOAT, // type
+        GL_FALSE, // normalized
+        5 * sizeof(GLfloat), //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
+        (void*)(0 * sizeof(GLfloat))); // pointer (offset of the first component of the first generic vertex attribute)
 
-}
+    // UV
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, // index
+        2, // size
+        GL_FLOAT, // type
+        GL_FALSE, // normalized
+        5 * sizeof(GLfloat), //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
+        (void*)(3 * sizeof(GLfloat))); // pointer (offset of the first component of the first generic vertex attribute)
 
-Quad::~Quad() {
-    glDeleteBuffers(1, &_vbo);
-    glDeleteVertexArrays(1, &_vao);
 
 }

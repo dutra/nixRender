@@ -2,11 +2,13 @@
 #define GBUFFER_H
 
 #include <GL/glew.h>
+#include <memory>
+#include "shader.h"
 
 enum GBUFFER_TEXTURE_TYPE {
     GBUFFER_TEXTURE_TYPE_POSITION,
-    GBUFFER_TEXTURE_TYPE_DIFFUSE,
     GBUFFER_TEXTURE_TYPE_NORMAL,
+    GBUFFER_TEXTURE_TYPE_DIFFUSE,
     GBUFFER_TEXTURE_TYPE_TEXCOORD,
     GBUFFER_NUM_TEXTURES
 };
@@ -20,6 +22,8 @@ public:
     void dispose();
     void use();
     void unuse();
+    void read(std::shared_ptr<Shader> shader);
+
 private:
     GLuint _fbo;
     GLuint _textures[GBUFFER_NUM_TEXTURES];

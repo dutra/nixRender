@@ -7,64 +7,68 @@
 #include "texture.h"
 
 Cube::Cube() {
-    
+    _texture_color.reset(new Texture(GL_TEXTURE_2D, "assets/stone/color.png"));
+    _texture_normal.reset(new Texture(GL_TEXTURE_2D, "assets/stone/normal.png"));
 }
 
 void Cube::init() {
-    recreateBlocks();
+    recreate_blocks();
+    _texture_color->init(GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
+    _texture_normal->init(GL_RGB, GL_RGB, GL_UNSIGNED_BYTE);
 }
 
-void Cube::recreateBlocks() {
+
+void Cube::recreate_blocks() {
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
 
     // front
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f }); //A
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f }); //B
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f }); //C
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f }); //D
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f }); //E
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f }); //F
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //A
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f }); //B
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //C
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //D
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f }); //E
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //F
 
     // top
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f }); //G
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f }); //H
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f }); //I
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f }); //J
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f }); //L
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f }); //M
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f }); //G
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //H
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //I
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //J
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f }); //L
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //M
 
     // back
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f }); //N
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f }); //O
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f }); //P
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f }); //Q
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f }); //R
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f }); //S
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //N
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f }); //O
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //P
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //Q
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f }); //R
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //S
 
     // bottom
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f });
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f });
 
     // left
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
 
     // right
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f });
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
     
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
@@ -72,46 +76,46 @@ void Cube::recreateBlocks() {
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
     //GLint posAttrib = glGetAttribLocation(_shader->getProgram(), "position");
+    // position
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, // index
         3, // size
         GL_FLOAT, // type
         GL_FALSE, // normalized
-        0, //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
+        8 * sizeof(GLfloat), //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
         0); // pointer (offset of the first component of the first generic vertex attribute)
 
+    // normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, // index
+        3, // size
+        GL_FLOAT, // type
+        GL_FALSE, // normalized
+        8 * sizeof(GLfloat), //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
+        (void*)(3*sizeof(GLfloat))); // pointer (offset of the first component of the first generic vertex attribute)
 
-    /*    GLint materialAttrib = glGetAttribLocation(_shader->getProgram(), "material");
-    glEnableVertexAttribArray(materialAttrib);
-    glVertexAttribPointer(materialAttrib, 3, GL_UNSIGNED_BYTE, GL_FALSE, 4 * sizeof(GLfloat) + sizeof(GLubyte), (void*)(3 * sizeof(GLfloat)));
-    */
-    /*
-    int layer = 0;
+    // UV
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, // index
+        2, // size
+        GL_FLOAT, // type
+        GL_FALSE, // normalized
+        8 * sizeof(GLfloat), //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
+        (void*)(6 * sizeof(GLfloat))); // pointer (offset of the first component of the first generic vertex attribute)
 
-    _texture->init(GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE);
-
-    GLubyte *texData;
-
-    texData = new GLubyte[15*15*15 * 4];
-    for(int i = 0; i<15*15*15*4; i++) {
-    texData[i] = 0;
-    }
-    int x = 2, y = 0, z = 0;
-    texData[x/4 + y/4*15 + z/4*15*15] = 1;
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_1D_ARRAY, _texture->getID());
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexSubImage2D(GL_TEXTURE_1D_ARRAY, 0, 0, 0, 15*15*15, 0, GL_RGBA, GL_UNSIGNED_INT, texData);
-    delete[] texData;*/
 
 
 }
 
-void Cube::render() {
+void Cube::render(std::shared_ptr<Shader> shader) {
     glBindVertexArray(_vao);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+    shader->setTextureUniform("colorMap", 0);
+    _texture_color->bind(0);
+    shader->setTextureUniform("normalMap", 1);
+    _texture_color->bind(1);
 
     glDrawArrays(GL_TRIANGLES, 0, 6 * 6);
 
@@ -124,5 +128,4 @@ void Cube::render() {
 Cube::~Cube() {
     glDeleteBuffers(1, &_vbo);
     glDeleteVertexArrays(1, &_vao);
-    delete _texture;
 }

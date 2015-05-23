@@ -28,8 +28,10 @@ RenderSystem::RenderSystem() {
     _window.reset(new sf::Window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "OpenGL", sf::Style::Titlebar | sf::Style::Close, *_settings));
 //    _blockShader.reset(new Shader("shaders/block.vert", "shaders/block.frag"));
     _geometry_shader.reset(new Shader("shaders/deferred/geometry.vert", "shaders/deferred/geometry.frag"));
-    _chunkManager.reset(new ChunkManager());
-    _cube.reset(new Cube());
+    _lighting_shader.reset(new Shader("shaders/deferred/lighting.vert", "shaders/deferred/lighting.frag"));
+    _chunkManager.reset(new ChunkManager);
+    _cube.reset(new Cube);
+    _quad.reset(new Quad);
     _gbuffer.reset(new GBuffer(WINDOW_WIDTH, WINDOW_HEIGHT));
 }
 
@@ -41,9 +43,16 @@ void RenderSystem::init() {
     glewExperimental = GL_TRUE;
     glewInit();
 
+    // lighting shader
+    _lighting_shader->bindFragDataLocation(0, "OutColor");
+    _lighting_shader->compile();
+    //_lighting_shader->use();
+
+
+    // geometry shader
     _geometry_shader->bindFragDataLocation(0, "OutWorldPos");
-    _geometry_shader->bindFragDataLocation(1, "OutDiffuse");
-    _geometry_shader->bindFragDataLocation(2, "OutNormal");
+    _geometry_shader->bindFragDataLocation(1, "OutNormal");
+    _geometry_shader->bindFragDataLocation(2, "OutDiffuse");
     _geometry_shader->bindFragDataLocation(3, "OutTexCoord");
     _geometry_shader->compile();
     _geometry_shader->use();
@@ -52,7 +61,7 @@ void RenderSystem::init() {
 
     // Set up view
     _view = glm::lookAt(
-    glm::vec3(2.0f, 2.0f, 3.0f), // eye
+    glm::vec3(-2.0f, 2.0f, 3.0f), // eye
     glm::vec3(0.0f, 0.0f, 0.0f), // center
     glm::vec3(0.0f, 1.0f, 0.0f) // up
     );
@@ -68,34 +77,43 @@ void RenderSystem::init() {
     _world = glm::mat4();
     GLint uniModel = _geometry_shader->getUniformLocation("world");
     glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(_world));
-    
+
+
+    // Set up diffuse
+    glm::vec3 diffuse = glm::vec3(1.0, 1.0, 1.0);
+    GLint uni_diffuse = _geometry_shader->getUniformLocation("diffuse");
+    glUniform3fv(uni_diffuse, 1, glm::value_ptr(diffuse));
+
     _chunkManager->init();
     _cube->init();
     
     _geometry_shader->unuse();
-    
+
+    _lighting_shader->use();
+    _quad->init();
+
     glCheckError();
 }
 
 void RenderSystem::update(double delta_t) {
-    // use shader
+    // geometry pass
     _geometry_shader->use();
-    // use geometry buffer
     _gbuffer->use();
-    
     glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
     glEnable(GL_DEPTH_TEST);
-
     // render all components
     //_chunkManager->render();
-    _cube->render();
-
-    //_blockShader->unuse();
+    _cube->render(_geometry_shader);
     _gbuffer->unuse();
     _geometry_shader->unuse();
+    
+    // lighting pass
+    glDisable(GL_DEPTH_TEST);
+    _lighting_shader->use();
+    _gbuffer->read(_lighting_shader);
+    _quad->draw();
+    _lighting_shader->unuse();
 
     _window->display();
 
