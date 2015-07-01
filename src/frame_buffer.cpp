@@ -126,9 +126,9 @@ void FrameBuffer::use() {
     glViewport(0, 0, _width, _height);
 }
 
-void FrameBuffer::unuse(int window_width, int window_height) {
+void FrameBuffer::unuse() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, window_width, window_height);
+    glViewport(0, 0, _width, _height);
 }
 
 GLuint FrameBuffer::getTextureID() {

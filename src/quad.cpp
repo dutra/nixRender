@@ -33,7 +33,6 @@ Quad::~Quad() {
 
 }
 
-
 void Quad::init() {
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);

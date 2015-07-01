@@ -38,11 +38,16 @@ private:
     void countFPS(double delta_t);
     //std::shared_ptr<Shader> _blockShader;
     std::shared_ptr<Shader> _geometry_shader;
-    std::shared_ptr<Shader> _lighting_shader;
-    std::unique_ptr<ChunkManager> _chunkManager;
+	std::shared_ptr<Shader> _lighting_shader;
+	std::shared_ptr<Shader> _pass_shader;
+	std::shared_ptr<Shader> _luma_shader;
+	std::shared_ptr<Shader> _gaussian_first_shader, _gaussian_second_shader;
+	std::unique_ptr<ChunkManager> _chunkManager;
     std::unique_ptr<GBuffer> _gbuffer;
-    glm::mat4 _view, _proj, _world;
-    std::unique_ptr<Cube> _cube;
+	std::unique_ptr<FrameBuffer> _fbo, _fbo_luma, _fbo_gaussian_first, _fbo_gaussian_second;
+	glm::mat4 _view, _proj, _world;
+    glm::vec3 _view_pos;
+    std::unique_ptr<Cube> _cube, _cube2, _cube3;
     std::unique_ptr<Quad> _quad;
 };
 

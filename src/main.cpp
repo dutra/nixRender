@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <fstream>
+#include <cmath>
 #include <GL/glew.h>
 #include <SFML/Window.hpp>
 #include <glm/glm.hpp>
@@ -14,11 +15,13 @@
 #include "world_manager.h"
 #include "world_types.h"
 
+
 int main() {
+
+
     auto t_last = std::chrono::high_resolution_clock::now();
     RenderSystem rs;
     rs.init();
-//    Quad quad;
 
     WorldManager wm;
     wm.addComponent(55, Component::DRAW_COMPONENT);

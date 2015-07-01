@@ -6,7 +6,7 @@
 #include "color.h"
 #include <SOIL/SOIL.h>
 
-Texture::Texture(GLint texture_type, char * image)
+Texture::Texture(GLint texture_type, std::string image)
  : _texture_type(texture_type), _image(image) {
 
 }
@@ -20,8 +20,8 @@ void Texture::init(GLint internalFormat, GLint format, GLint type, int width, in
 
     if(_texture_type == GL_TEXTURE_2D) {
 
-        if (_image) {
-            image_data = SOIL_load_image(_image, &_width, &_height, 0, SOIL_LOAD_RGB);
+        if (_image.length()) {
+            image_data = SOIL_load_image(_image.c_str(), &_width, &_height, 0, SOIL_LOAD_RGB);
         }
 
         // Create texture to hold color buffer
@@ -35,7 +35,7 @@ void Texture::init(GLint internalFormat, GLint format, GLint type, int width, in
 
         // Unbind used resources
         glBindTexture(GL_TEXTURE_2D, 0);
-        if (_image) {
+        if (_image.length()) {
             SOIL_free_image_data(image_data);
         }
     }

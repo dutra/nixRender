@@ -3,12 +3,14 @@
 #include "cube.h"
 #include <memory>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "main.h"
 #include "texture.h"
 
-Cube::Cube() {
-    _texture_color.reset(new Texture(GL_TEXTURE_2D, "assets/stone/color.png"));
-    _texture_normal.reset(new Texture(GL_TEXTURE_2D, "assets/stone/normal.png"));
+Cube::Cube(std::string color_map, std::string normal_map) {
+    _texture_color.reset(new Texture(GL_TEXTURE_2D, color_map));
+    _texture_normal.reset(new Texture(GL_TEXTURE_2D, normal_map));
 }
 
 void Cube::init() {
@@ -107,8 +109,21 @@ void Cube::recreate_blocks() {
 
 }
 
+void Cube::translate(glm::vec3 pos) {
+	_model = glm::translate(_model, pos);
+}
+
+void Cube::scale(glm::vec3 factor) {
+	_model = glm::scale(_model, factor);
+}
+
 void Cube::render(std::shared_ptr<Shader> shader) {
-    glBindVertexArray(_vao);
+	// translate and scale model first
+	GLint uniModel = shader->getUniformLocation("world");
+	glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(_model));
+
+	// bind Vertex Array
+	glBindVertexArray(_vao);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
@@ -117,6 +132,7 @@ void Cube::render(std::shared_ptr<Shader> shader) {
     shader->setTextureUniform("normalMap", 1);
     _texture_color->bind(1);
 
+	// draw
     glDrawArrays(GL_TRIANGLES, 0, 6 * 6);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

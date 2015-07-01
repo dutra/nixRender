@@ -1,5 +1,4 @@
 
-
 #include "chunk_manager.h"
 #include <memory>
 #include <glm/glm.hpp>
@@ -22,10 +21,10 @@ void ChunkManager::recreateBlocks() {
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
 
-    // vertices
-    /*for(int k = 0; k < CHUNK_SIZE_Z; k++) {
+/*    // vertices
+    for(int k = 0; k < CHUNK_SIZE_Z; k++) {
         for(int j = 0; j < CHUNK_SIZE_Y; j++) {
-            for(int i = 0; i < CHUNK_SIZE_X; i++) {*/
+            for(int i = 0; i < CHUNK_SIZE_X; i++) {
                 // front
                 _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f }); //A
                 _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f }); //B

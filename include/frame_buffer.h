@@ -17,7 +17,7 @@ public:
     void initDepth();
     ~FrameBuffer();
     void use();
-    void unuse(int window_width, int window_height);
+    void unuse();
     GLuint getTextureID();
     GLuint getTexture3dID();
     void bindTexture(GLuint pos);
