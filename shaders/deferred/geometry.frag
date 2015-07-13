@@ -11,6 +11,8 @@ out vec3 OutTexCoord;
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
 
+vec3 diffuseColor = vec3(1.0, 0.0, 0.0);
+
 //uniform sampler2D gColorMap; 
 
 void main() { 
@@ -19,7 +21,7 @@ void main() {
     OutNormal = Normal0 + texture(normalMap, TexCoord0).xyz;
     OutNormal = normalize(OutNormal); 
     
-    OutDiffuse = texture(colorMap, TexCoord0).xyz;
+    OutDiffuse = texture(colorMap, TexCoord0).xyz + diffuseColor;
 
     OutTexCoord = vec3(OutTexCoord.xy, 1.0);
 }

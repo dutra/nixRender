@@ -24,6 +24,14 @@ void Cube::recreate_blocks() {
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
 
+    /*
+      ________
+     / |     /|
+    /__|____/ |
+    |  |____|_| 
+    | /     | /
+    |/______|/
+    */
     // front
     _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //A
     _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f }); //B

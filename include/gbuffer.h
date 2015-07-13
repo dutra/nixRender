@@ -23,6 +23,7 @@ public:
     void use();
     void unuse();
     void read(std::shared_ptr<Shader> shader);
+    void unread();
 
 private:
     GLuint _fbo;

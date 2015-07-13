@@ -19,6 +19,7 @@
 #include "gbuffer.h"
 #include "cube.h"
 #include "quad.h"
+#include "marching_cube_mesher.h"
 
 class RenderSystem {
 public:
@@ -37,18 +38,16 @@ private:
     void check_events();
     void countFPS(double delta_t);
     //std::shared_ptr<Shader> _blockShader;
+    std::shared_ptr<Shader> _clear_shader;
     std::shared_ptr<Shader> _geometry_shader;
 	std::shared_ptr<Shader> _lighting_shader;
 	std::shared_ptr<Shader> _pass_shader;
-	std::shared_ptr<Shader> _luma_shader;
-	std::shared_ptr<Shader> _gaussian_first_shader, _gaussian_second_shader;
 	std::unique_ptr<ChunkManager> _chunkManager;
     std::unique_ptr<GBuffer> _gbuffer;
-	std::unique_ptr<FrameBuffer> _fbo, _fbo_luma, _fbo_gaussian_first, _fbo_gaussian_second;
 	glm::mat4 _view, _proj, _world;
     glm::vec3 _view_pos;
-    std::unique_ptr<Cube> _cube, _cube2, _cube3;
     std::unique_ptr<Quad> _quad;
+    std::unique_ptr<MarchingCubeMesher> _mcm;
 };
 
 
