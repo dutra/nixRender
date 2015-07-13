@@ -94,9 +94,9 @@ void MarchingCubeMesher::generateTriagles() {
     }
     //for (int i = 0; i < m_totalTriangles; i++) {
     //    Triangle t = _triangles[i];
-    //    std::cout << "(" << t.p[0].x << ", " << t.p[0].y << ", " << t.p[0].z << ")";
-    //    std::cout << "--- (" << t.p[1].x << ", " << t.p[1].y << ", " << t.p[1].z << ")";
-    //    std::cout << "--- (" << t.p[2].x << ", " << t.p[2].y << ", " << t.p[2].z << ")" << std::endl;
+    //    std::cout << "(" << t.p[0].nx << ", " << t.p[0].ny << ", " << t.p[0].nz << ")";
+    //    std::cout << "--- (" << t.p[1].nx << ", " << t.p[1].ny << ", " << t.p[1].nz << ")";
+    //    std::cout << "--- (" << t.p[2].nx << ", " << t.p[2].ny << ", " << t.p[2].nz << ")" << std::endl;
     //}
 }
 
@@ -181,17 +181,18 @@ VertexNormal MarchingCubeMesher::vertexInterpolate(float isolevel, glm::vec3 p1,
     glm::vec3 p;
 
     if (abs(isolevel - valp1) < 0.00001)
-        return VertexNormal{ p1.x, p1.y, p1.z, 0, 0, 0 };
-    if (abs(isolevel - valp2) < 0.00001)
-        return VertexNormal{ p2.x, p2.y, p2.z, 0, 0, 0 };
-    if (abs(valp1 - valp2) < 0.00001)
-        return VertexNormal{ p1.x, p1.y, p1.z, 0, 0, 0 };
-    mu = (isolevel - valp1) / (valp2 - valp1);
-    p.x = p1.x + mu * (p2.x - p1.x);
-    p.y = p1.y + mu * (p2.y - p1.y);
-    p.z = p1.z + mu * (p2.z - p1.z);
-
-    return VertexNormal{ p.x, p.y, p.z, 0, 0, 0 };
+        p = p1;
+    else if (abs(isolevel - valp2) < 0.00001)
+        p = p2;
+    else if (abs(valp1 - valp2) < 0.00001)
+        p = p1;
+    else {
+        mu = (isolevel - valp1) / (valp2 - valp1);
+        p.x = p1.x + mu * (p2.x - p1.x);
+        p.y = p1.y + mu * (p2.y - p1.y);
+        p.z = p1.z + mu * (p2.z - p1.z);
+    }
+    return VertexNormal{ p.x, p.y, p.z, 0.0f, 1.0f, 0.0f };
 }
 
 MarchingCubeMesher::~MarchingCubeMesher() {

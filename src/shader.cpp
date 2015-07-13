@@ -134,8 +134,13 @@ void Shader::compile() {
 
 
 void Shader::use() {
-    glCheckError();
     glUseProgram(_shader_program);
+
+    if (_camera) {
+        GLint uniView = getUniformLocation("view");
+        glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(_camera->getViewMatrix()));
+    }
+
     glCheckError();
 }
 
@@ -220,4 +225,8 @@ GLint Shader::getUniformLocation(std::string name) {
 
     return loc;
 
+}
+
+void Shader::attachCamera(std::shared_ptr<Camera> camera) {
+    _camera = camera;
 }

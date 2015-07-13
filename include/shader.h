@@ -4,6 +4,9 @@
 #include <string>
 #include <GL/glew.h>
 #include <map>
+#include <memory>
+
+#include "camera.h"
 
 class Shader {
 public:
@@ -16,6 +19,7 @@ public:
     GLint getUniformLocation(std::string name);
     void bindFragDataLocation(int i, std::string name);
     void setTextureUniform(std::string name, GLuint value);
+    void attachCamera(std::shared_ptr<Camera> camera);
     ~Shader();
 
 private:
@@ -25,6 +29,7 @@ private:
     GLuint _fragment_shader;
     GLuint _shader_program;
     std::map<int, std::string> _fragDataLocation;
+    std::shared_ptr<Camera> _camera;
 };
 
 #endif // SHADER_H

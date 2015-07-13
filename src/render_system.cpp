@@ -22,10 +22,6 @@
 #include "error.h"
 #include "marching_cube_mesher.h"
 
-float gauss(int i, float sigma2) {
-	return 1.0 / std::sqrt(2 * 3.14159265 * sigma2) * std::exp(-(i*i) / (2 * sigma2));
-}
-
 
 RenderSystem::RenderSystem() {
     _settings.reset(new sf::ContextSettings());
@@ -39,11 +35,13 @@ RenderSystem::RenderSystem() {
     _clear_shader.reset(new Shader("shaders/deferred/clear.vert", "shaders/deferred/clear.frag"));
     _geometry_shader.reset(new Shader("shaders/deferred/geometry.vert", "shaders/deferred/geometry.frag"));
     _lighting_shader.reset(new Shader("shaders/deferred/lighting.vert", "shaders/deferred/lighting.frag"));
-	_pass_shader.reset(new Shader("shaders/pass.vert", "shaders/pass.frag"));
+    _pass_shader.reset(new Shader("shaders/pass.vert", "shaders/pass.frag"));
+    _simple_shader.reset(new Shader("shaders/simple.vert", "shaders/simple.frag"));
     _chunkManager.reset(new ChunkManager());
 	_quad.reset(new Quad);
 	_gbuffer.reset(new GBuffer(WINDOW_WIDTH, WINDOW_HEIGHT));
     _mcm.reset(new MarchingCubeMesher);
+    _camera.reset(new Camera);
 }
 
 void RenderSystem::init() {
@@ -53,6 +51,9 @@ void RenderSystem::init() {
     // Initialize GLEW
     glewExperimental = GL_TRUE;
     glewInit();
+
+    // camera
+    _camera->init();
 
     // lighting shader
     _lighting_shader->bindFragDataLocation(0, "OutColor");
@@ -78,21 +79,12 @@ void RenderSystem::init() {
     _geometry_shader->bindFragDataLocation(3, "OutTexCoord");
     _geometry_shader->compile();
     _geometry_shader->use();
-
     _gbuffer->init();
 
-	// Set up view
-    _view_pos = glm::vec3(-5.0f, 10.0f, -5.0f);
-    _view = glm::lookAt(
-    _view_pos, // eye
-    glm::vec3(10.0f, 0.0f, 10.0f), // center
-    glm::vec3(0.0f, 1.0f, 0.0f) // up
-    );
-    GLint uniView = _geometry_shader->getUniformLocation("view");
-    glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(_view));
-    
+    _geometry_shader->attachCamera(_camera);
+
     // Set up projection
-    _proj = glm::perspective(FOV, ((float)WINDOW_WIDTH) / ((float)WINDOW_HEIGHT), 1.0f, 20.0f);
+    _proj = glm::perspective(FOV, ((float)WINDOW_WIDTH) / ((float)WINDOW_HEIGHT), 0.1f, 1000.0f);
     GLint uniProj = _geometry_shader->getUniformLocation("proj");
     glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(_proj));
     
@@ -132,9 +124,6 @@ void RenderSystem::update(double delta_t) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-
-    GLint uniView = _geometry_shader->getUniformLocation("view");
-    glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(_view));
 
     // render all components
     _chunkManager->render();
@@ -181,54 +170,7 @@ void RenderSystem::check_events() {
             case sf::Event::KeyPressed:
                 if (windowEvent.key.code == sf::Keyboard::Escape)
                     _window->close();
-                if (windowEvent.key.code == sf::Keyboard::W) {
-                    _view_pos += glm::vec3(0.0f, 0.1f, 0.0f);
-                    _view = glm::lookAt(
-                        _view_pos, // eye
-                        glm::vec3(0.0f, 0.0f, 0.0f), // center
-                        glm::vec3(0.0f, 1.0f, 0.0f) // up
-                        );
-                }
-                if (windowEvent.key.code == sf::Keyboard::S) {
-                    _view_pos += glm::vec3(0.0f, -0.1f, 0.0f);
-                    _view = glm::lookAt(
-                        _view_pos, // eye
-                        glm::vec3(0.0f, 0.0f, 0.0f), // center
-                        glm::vec3(0.0f, 1.0f, 0.0f) // up
-                        );
-                }
-                if (windowEvent.key.code == sf::Keyboard::A) {
-                    _view_pos += glm::vec3(-0.1f, 0.0f, 0.0f);
-                    _view = glm::lookAt(
-                        _view_pos, // eye
-                        glm::vec3(0.0f, 0.0f, 0.0f), // center
-                        glm::vec3(0.0f, 1.0f, 0.0f) // up
-                        );
-                }
-                if (windowEvent.key.code == sf::Keyboard::D) {
-                    _view_pos += glm::vec3(0.1f, 0.0f, 0.0f);
-                    _view = glm::lookAt(
-                        _view_pos, // eye
-                        glm::vec3(0.0f, 0.0f, 0.0f), // center
-                        glm::vec3(0.0f, 1.0f, 0.0f) // up
-                        );
-                }
-                if (windowEvent.key.code == sf::Keyboard::LShift) {
-                    _view_pos += glm::vec3(0.0f, 0.0f, -0.1f);
-                    _view = glm::lookAt(
-                        _view_pos, // eye
-                        glm::vec3(0.0f, 0.0f, 0.0f), // center
-                        glm::vec3(0.0f, 1.0f, 0.0f) // up
-                        );
-                }
-                if (windowEvent.key.code == sf::Keyboard::LControl) {
-                    _view_pos += glm::vec3(0.0f, 0.0f, 0.1f);
-                    _view = glm::lookAt(
-                        _view_pos, // eye
-                        glm::vec3(0.0f, 0.0f, 0.0f), // center
-                        glm::vec3(0.0f, 1.0f, 0.0f) // up
-                        );
-                }
+                _camera->key_callback(windowEvent.key);
                 break;
 
             default:

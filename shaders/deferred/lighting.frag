@@ -9,7 +9,7 @@ uniform sampler2D diffuseTex;
 
 
 void main() { 
-    vec3 lightPosition = vec3(-5.0, 4.0, -5.0);
+    vec3 lightPosition = vec3(-5.0, 7.0, -5.0);
     vec3 Position = texture(positionTex, TexCoord0).xyz;
     vec3 n = texture(normalTex, TexCoord0).xyz;
     vec3 s = normalize(lightPosition - Position);

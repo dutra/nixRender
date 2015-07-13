@@ -20,6 +20,7 @@
 #include "cube.h"
 #include "quad.h"
 #include "marching_cube_mesher.h"
+#include "camera.h"
 
 class RenderSystem {
 public:
@@ -41,13 +42,15 @@ private:
     std::shared_ptr<Shader> _clear_shader;
     std::shared_ptr<Shader> _geometry_shader;
 	std::shared_ptr<Shader> _lighting_shader;
-	std::shared_ptr<Shader> _pass_shader;
-	std::unique_ptr<ChunkManager> _chunkManager;
+    std::shared_ptr<Shader> _pass_shader;
+    std::shared_ptr<Shader> _simple_shader;
+    std::unique_ptr<ChunkManager> _chunkManager;
     std::unique_ptr<GBuffer> _gbuffer;
 	glm::mat4 _view, _proj, _world;
     glm::vec3 _view_pos;
     std::unique_ptr<Quad> _quad;
     std::unique_ptr<MarchingCubeMesher> _mcm;
+    std::shared_ptr<Camera> _camera;
 };
 
 
