@@ -4,9 +4,9 @@
 #include <iostream>
 
 float density(glm::vec3 p) {
-    if (p.y == 5)
+    if (p.y == 3)
         return 0;
-    else if (p.y > 5)
+    else if (p.y > 3)
         return 1;
     else
         return -1;
@@ -166,10 +166,13 @@ int MarchingCubeMesher::polygonise(Gridcell grid, float isolevel, Triangle *tria
 
     // Create the triangle
     ntriang = 0;
+    glm::vec3 normal;
     for (i = 0; m_triTable[cubeindex][i] != -1; i += 3) {
-        triangles[ntriang].p[0] = vertlist[m_triTable[cubeindex][i]];
-        triangles[ntriang].p[1] = vertlist[m_triTable[cubeindex][i + 1]];
-        triangles[ntriang].p[2] = vertlist[m_triTable[cubeindex][i + 2]];
+        Triangle& triangle = triangles[ntriang];
+        triangle.p[0] = vertlist[m_triTable[cubeindex][i]];
+        triangle.p[1] = vertlist[m_triTable[cubeindex][i + 1]];
+        triangle.p[2] = vertlist[m_triTable[cubeindex][i + 2]];
+        computeNormal(triangle.p[0], triangle.p[1], triangle.p[2]);
         ntriang++;
     }
 
@@ -192,7 +195,22 @@ VertexNormal MarchingCubeMesher::vertexInterpolate(float isolevel, glm::vec3 p1,
         p.y = p1.y + mu * (p2.y - p1.y);
         p.z = p1.z + mu * (p2.z - p1.z);
     }
-    return VertexNormal{ p.x, p.y, p.z, 0.0f, 1.0f, 0.0f };
+    return VertexNormal{ p.x, p.y, p.z, 0.0f, 0.0f, 0.0f };
+}
+
+void MarchingCubeMesher::computeNormal(VertexNormal& p1, VertexNormal& p2, VertexNormal& p3) {
+    glm::vec3 vp1 = glm::vec3(p1.x, p1.y, p1.z);
+    glm::vec3 vp2 = glm::vec3(p2.x, p2.y, p2.z);
+    glm::vec3 vp3 = glm::vec3(p3.x, p3.y, p3.z);
+
+    glm::vec3 u = vp2 - vp1;
+    glm::vec3 v = vp3 - vp1;
+    
+    glm::vec3 vnormal = glm::cross(u, v);
+    p1.nx = p2.nx = p3.nx = vnormal.x;
+    p1.ny = p2.ny = p3.ny = vnormal.y;
+    p1.nz = p2.nz = p3.nz = vnormal.z;
+
 }
 
 MarchingCubeMesher::~MarchingCubeMesher() {
@@ -205,8 +223,6 @@ MarchingCubeMesher::~MarchingCubeMesher() {
         delete _grid[i];
     }
     delete _grid;
-
-
 }
 
 
@@ -503,3 +519,4 @@ const unsigned int MarchingCubeMesher::m_triTable[256][16] = {
         { 0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
         { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
 };
+

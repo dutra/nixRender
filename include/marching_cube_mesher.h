@@ -38,6 +38,7 @@ private:
     VertexNormal vertexInterpolate(float isolevel, glm::vec3 p1, glm::vec3 p2, float valp1, float valp2);
     void generateGrid();
     void generateTriagles();
+    void computeNormal(VertexNormal& p1, VertexNormal& p2, VertexNormal& p3);
 
     GLuint _vao;
     GLuint _vbo;
