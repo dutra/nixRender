@@ -2,14 +2,12 @@
 #include "marching_cube_mesher.h"
 #include <cmath>
 #include <iostream>
+#include <noise/noise.h>
 
 float density(glm::vec3 p) {
-    if (p.y == 3)
-        return 0;
-    else if (p.y > 3)
-        return 1;
-    else
-        return -1;
+    noise::module::Perlin perlin;
+    perlin.SetOctaveCount(1);
+    return perlin.GetValue(p.x / 15.0, p.y / 15.0, p.z / 15.0);
 }
 
 
@@ -92,6 +90,8 @@ void MarchingCubeMesher::generateTriagles() {
             }
         }
     }
+
+    std::cout << "Number of generated triangles: " << m_totalTriangles << std::endl;
     //for (int i = 0; i < m_totalTriangles; i++) {
     //    Triangle t = _triangles[i];
     //    std::cout << "(" << t.p[0].nx << ", " << t.p[0].ny << ", " << t.p[0].nz << ")";
@@ -203,15 +203,35 @@ void MarchingCubeMesher::computeNormal(VertexNormal& p1, VertexNormal& p2, Verte
     glm::vec3 vp2 = glm::vec3(p2.x, p2.y, p2.z);
     glm::vec3 vp3 = glm::vec3(p3.x, p3.y, p3.z);
 
-    glm::vec3 u = vp2 - vp1;
-    glm::vec3 v = vp3 - vp1;
-    
-    glm::vec3 vnormal = glm::cross(u, v);
-    p1.nx = p2.nx = p3.nx = vnormal.x;
-    p1.ny = p2.ny = p3.ny = vnormal.y;
-    p1.nz = p2.nz = p3.nz = vnormal.z;
-
+    glm::vec3 dp1 = -gradient(vp1);
+    p1 = { vp1.x, vp1.y, vp1.z, dp1.x, dp1.y, dp1.z };
+    glm::vec3 dp2 = -gradient(vp2);
+    p2 = { vp2.x, vp2.y, vp2.z, dp2.x, dp2.y, dp2.z };
+    glm::vec3 dp3 = -gradient(vp3);
+    p3 = { vp3.x, vp3.y, vp3.z, dp3.x, dp3.y, dp3.z };
 }
+
+
+glm::vec3 MarchingCubeMesher::gradient(glm::vec3 p) {
+    glm::vec3 d;
+    float D = 0.1;
+    // x
+    glm::vec3 dx = glm::vec3(D, 0.0, 0.0);
+    d.x = density(p + dx) - density(p - dx);
+
+    // y
+    glm::vec3 dy = glm::vec3(0.0, D, 0.0);
+    d.y = density(p + dy) - density(p - dy);
+
+    // z
+    glm::vec3 dz = glm::vec3(0.0, 0.0, D);
+    d.z = density(p + dz) - density(p - dz);
+
+    d = d / (2 * D);
+
+    return d;
+}
+
 
 MarchingCubeMesher::~MarchingCubeMesher() {
     delete _triangles;

@@ -100,7 +100,7 @@ void RenderSystem::init() {
 
     _geometry_shader->unuse();
 
-    _chunkManager->init();
+    //_chunkManager->init();
     _quad->init();
 
     _mcm->init();
@@ -122,11 +122,11 @@ void RenderSystem::update(double delta_t) {
     _geometry_shader->use();
     _gbuffer->use();
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
     // render all components
-    _chunkManager->render();
+    //_chunkManager->render();
     _mcm->render();
 	_gbuffer->unuse();
     _geometry_shader->unuse();

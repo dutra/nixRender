@@ -34,6 +34,7 @@ public:
     ~MarchingCubeMesher();
 
 private:
+    glm::vec3 gradient(glm::vec3 position);
     int polygonise(Gridcell grid, float isolevel, Triangle *triangles);
     VertexNormal vertexInterpolate(float isolevel, glm::vec3 p1, glm::vec3 p2, float valp1, float valp2);
     void generateGrid();

@@ -47,6 +47,14 @@ void Camera::key_callback(sf::Event::KeyEvent event) {
             m_cameraPos += cameraRight;
             m_cameraTarget += cameraRight;
             break;
+        case sf::Keyboard::LShift:
+            m_cameraPos += m_cameraUp;
+            m_cameraTarget += m_cameraUp;
+            break;
+        case sf::Keyboard::LControl:
+            m_cameraPos -= m_cameraUp;
+            m_cameraTarget -= m_cameraUp;
+            break;
     }
     refresh_view();
 }

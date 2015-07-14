@@ -11,7 +11,7 @@ out vec3 OutTexCoord;
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
 
-vec3 diffuseColor = vec3(1.0, 0.0, 0.0);
+vec3 diffuseColor = vec3(1.0, 1.0, 1.0);
 
 //uniform sampler2D gColorMap; 
 
