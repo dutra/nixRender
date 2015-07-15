@@ -33,7 +33,7 @@ private:
     std::unique_ptr<Chunk> _chunks;
     GLuint _vao;
     GLuint _vbo;
-    std::vector<Vertex> _vertices;
+    std::vector<VertexNormalUV> _vertices;
     Texture * _texture;
 };
 

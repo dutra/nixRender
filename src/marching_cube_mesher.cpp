@@ -30,7 +30,7 @@ void MarchingCubeMesher::init() {
         3, // size
         GL_FLOAT, // type
         GL_FALSE, // normalized
-        6 * sizeof(GLfloat), //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
+        sizeof(VertexNormal), // stride (byte offset between consecutive generic vertex attributes)
         0); // pointer (offset of the first component of the first generic vertex attribute)
 
     // normal
@@ -39,8 +39,8 @@ void MarchingCubeMesher::init() {
         3, // size
         GL_FLOAT, // type
         GL_FALSE, // normalized
-        6 * sizeof(GLfloat), //4 * sizeof(GLfloat), // + sizeof(GLubyte), // stride (byte offset between consecutive generic vertex attributes)
-        (void*)(3 * sizeof(GLfloat))); // pointer (offset of the first component of the first generic vertex attribute)
+        sizeof(VertexNormal), // stride (byte offset between consecutive generic vertex attributes)
+        (void*)(sizeof(glm::f32vec3))); // pointer (offset of the first component of the first generic vertex attribute)
 
 
 }
@@ -118,7 +118,7 @@ void MarchingCubeMesher::render() {
 int MarchingCubeMesher::polygonise(Gridcell grid, float isolevel, Triangle *triangles) {
     int i, ntriang;
     int cubeindex;
-    VertexNormal vertlist[12];
+    glm::vec3 vertlist[12];
 
 
     // Determine the index into the edge table which
@@ -169,17 +169,17 @@ int MarchingCubeMesher::polygonise(Gridcell grid, float isolevel, Triangle *tria
     glm::vec3 normal;
     for (i = 0; m_triTable[cubeindex][i] != -1; i += 3) {
         Triangle& triangle = triangles[ntriang];
-        triangle.p[0] = vertlist[m_triTable[cubeindex][i]];
-        triangle.p[1] = vertlist[m_triTable[cubeindex][i + 1]];
-        triangle.p[2] = vertlist[m_triTable[cubeindex][i + 2]];
-        computeNormal(triangle.p[0], triangle.p[1], triangle.p[2]);
+        triangle.v[0].p = vertlist[m_triTable[cubeindex][i]];
+        triangle.v[1].p = vertlist[m_triTable[cubeindex][i + 1]];
+        triangle.v[2].p = vertlist[m_triTable[cubeindex][i + 2]];
+        computeNormal(triangle.v[0], triangle.v[1], triangle.v[2]);
         ntriang++;
     }
 
     return(ntriang);
 }
 
-VertexNormal MarchingCubeMesher::vertexInterpolate(float isolevel, glm::vec3 p1, glm::vec3 p2, float valp1, float valp2) {
+glm::vec3 MarchingCubeMesher::vertexInterpolate(float isolevel, glm::vec3 p1, glm::vec3 p2, float valp1, float valp2) {
     float mu;
     glm::vec3 p;
 
@@ -195,20 +195,13 @@ VertexNormal MarchingCubeMesher::vertexInterpolate(float isolevel, glm::vec3 p1,
         p.y = p1.y + mu * (p2.y - p1.y);
         p.z = p1.z + mu * (p2.z - p1.z);
     }
-    return VertexNormal{ p.x, p.y, p.z, 0.0f, 0.0f, 0.0f };
+    return p;
 }
 
 void MarchingCubeMesher::computeNormal(VertexNormal& p1, VertexNormal& p2, VertexNormal& p3) {
-    glm::vec3 vp1 = glm::vec3(p1.x, p1.y, p1.z);
-    glm::vec3 vp2 = glm::vec3(p2.x, p2.y, p2.z);
-    glm::vec3 vp3 = glm::vec3(p3.x, p3.y, p3.z);
-
-    glm::vec3 dp1 = -gradient(vp1);
-    p1 = { vp1.x, vp1.y, vp1.z, dp1.x, dp1.y, dp1.z };
-    glm::vec3 dp2 = -gradient(vp2);
-    p2 = { vp2.x, vp2.y, vp2.z, dp2.x, dp2.y, dp2.z };
-    glm::vec3 dp3 = -gradient(vp3);
-    p3 = { vp3.x, vp3.y, vp3.z, dp3.x, dp3.y, dp3.z };
+    p1.n = -gradient(p1.p);
+    p2.n = -gradient(p2.p);
+    p3.n = -gradient(p3.p);
 }
 
 

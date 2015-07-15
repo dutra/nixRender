@@ -26,57 +26,57 @@ void ChunkManager::recreateBlocks() {
         for(int j = 0; j < CHUNK_SIZE_Y; j++) {
             for(int i = 0; i < CHUNK_SIZE_X; i++) {
                 // front
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //A
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f }); //B
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //C
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //D
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f }); //E
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //F
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //A
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f }); //B
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //C
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //D
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f }); //E
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //F
 
                 // top
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f }); //G
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //H
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //I
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //J
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f }); //L
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //M
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f }); //G
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //H
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //I
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //J
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f }); //L
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //M
 
                 // back
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //N
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f }); //O
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //P
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //Q
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f }); //R
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //S
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //N
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f }); //O
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //P
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //Q
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f }); //R
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //S
 
                 // bottom
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f }); //T
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f }); //U
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f }); //V
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f }); //X
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f }); //W
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f }); //Z
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f }); //T
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f }); //U
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f }); //V
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f }); //X
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f }); //W
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f }); //Z
 
                 // left
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f }); //a
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f }); //b
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //c
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //d
-                _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f }); //e
-                _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f }); //f
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f }); //a
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f }); //b
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //c
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //d
+                _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f }); //e
+                _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f }); //f
 
                 // right
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f }); //g
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f }); //h
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f }); //i
-                _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f }); //j
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f }); //l
-                _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //m
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f }); //g
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f }); //h
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f }); //i
+                _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f }); //j
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f }); //l
+                _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f }); //m
             }
         }
     }
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNormalUV)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 

@@ -33,55 +33,55 @@ void Cube::recreate_blocks() {
     |/______|/
     */
     // front
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //A
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f }); //B
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //C
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //D
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f }); //E
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //F
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //A
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f }); //B
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //C
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }); //D
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f }); //E
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }); //F
 
     // top
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f }); //G
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //H
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //I
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //J
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f }); //L
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //M
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f }); //G
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //H
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //I
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f }); //J
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f }); //L
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f }); //M
 
     // back
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //N
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f }); //O
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //P
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //Q
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f }); //R
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //S
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //N
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f }); //O
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //P
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f }); //Q
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f }); //R
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f }); //S
 
     // bottom
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f });
 
     // left
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
-    _vertices.push_back(Vertex{ 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
 
     // right
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
-    _vertices.push_back(Vertex{ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f });
+    _vertices.push_back(VertexNormalUV{ 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f });
     
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNormalUV)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
