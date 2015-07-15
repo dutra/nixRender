@@ -1,7 +1,7 @@
 #include "types.h"
 
-#define WINDOW_WIDTH 900u
-#define WINDOW_HEIGHT 600u
+#define WINDOW_WIDTH 3200u
+#define WINDOW_HEIGHT 1800u
 #define FOV 65.0f
 const uint32 FRAMES_COUNTER = 3000;
 #define GLSL_VERSION 400

@@ -26,7 +26,7 @@ public:
 private:
     GLuint _vao;
     GLuint _vbo;
-    std::vector<Vertex> _vertices;
+    std::vector<VertexNormalUV> _vertices;
     std::unique_ptr<Texture> _texture_color, _texture_normal;
 	glm::mat4 _model;
 };

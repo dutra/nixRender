@@ -15,7 +15,6 @@
 #include "world_manager.h"
 #include "world_types.h"
 
-
 int main() {
 
 
@@ -35,18 +34,9 @@ int main() {
 
         rs.update(delta_t);
 
-        // glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        //
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //
-        // quad.draw();
-
-        // Swap buffers
-        //window.display();
-
         t_last = t_current;
 
     }
-
+    
 
 }

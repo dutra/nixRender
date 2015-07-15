@@ -45,7 +45,7 @@ void Quad::init() {
     _vertices.push_back(VertexQuad{ -1.0f, 1.0f, 0.0f, 0.0f, 1.0f });
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VertexNormalUV)*_vertices.size(), &_vertices.front(), GL_STATIC_DRAW);
 
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
