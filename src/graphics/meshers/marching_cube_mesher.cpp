@@ -2,47 +2,13 @@
 #include "marching_cube_mesher.h"
 #include <cmath>
 #include <iostream>
-#include <noise/noise.h>
+#include <functional>
 
-float density(glm::vec3 p) {
-    noise::module::Perlin perlin;
-    perlin.SetOctaveCount(1);
-    return perlin.GetValue(p.x / 15.0, p.y / 15.0, p.z / 15.0);
-}
+void MarchingCubeMesher::init(std::function<float(glm::vec3)> density) {
+    m_density = density;
 
-
-void MarchingCubeMesher::init() {
     generateGrid();
-    generateTriagles();
-
-    glGenVertexArrays(1, &_vao);
-    glGenBuffers(1, &_vbo);
-
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle) * m_totalTriangles, _triangles, GL_STATIC_DRAW);
-    glBindVertexArray(_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-
-    //GLint posAttrib = glGetAttribLocation(_shader->getProgram(), "position");
-    // position
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, // index
-        3, // size
-        GL_FLOAT, // type
-        GL_FALSE, // normalized
-        sizeof(VertexNormal), // stride (byte offset between consecutive generic vertex attributes)
-        0); // pointer (offset of the first component of the first generic vertex attribute)
-
-    // normal
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, // index
-        3, // size
-        GL_FLOAT, // type
-        GL_FALSE, // normalized
-        sizeof(VertexNormal), // stride (byte offset between consecutive generic vertex attributes)
-        (void*)(sizeof(glm::f32vec3))); // pointer (offset of the first component of the first generic vertex attribute)
-
-
+  
 }
 
 void MarchingCubeMesher::generateGrid() {
@@ -69,24 +35,30 @@ void MarchingCubeMesher::generateGrid() {
 
                 for (int u = 0; u < 8; u++) {
                     cell.p[u] += glm::vec3(i, j, k);
-                    cell.val[u] = density(cell.p[u]);
+                    cell.val[u] = m_density(cell.p[u]);
+//                    std::cout << "(" << cell.p[u].x << "," << cell.p[u].y << "," << cell.p[u].z << "): " << cell.val[u] << " ";
                 }
             }
         }
     }
 }
 
-void MarchingCubeMesher::generateTriagles() {
+std::vector<Triangle> MarchingCubeMesher::generateTriagles() {
+    std::vector<Triangle> v_triangles;
     m_totalTriangles = 0;
-    _triangles = new Triangle[2 * 32 * 32 * 32];
     int n = 0;
+    Triangle triangles[10];
+
+    generateGrid();
 
     for (int i = 0; i < 32; i++) {
         for (int j = 0; j < 32; j++) {
             for (int k = 0; k < 32; k++) {
 
-                n = polygonise(_grid[i][j][k], 0, (_triangles + m_totalTriangles));
+                n = polygonise(_grid[i][j][k], 0, triangles);
                 m_totalTriangles += n;
+                for (int l = 0; l < n; l++)
+                    v_triangles.emplace_back(triangles[l]);
             }
         }
     }
@@ -98,21 +70,7 @@ void MarchingCubeMesher::generateTriagles() {
     //    std::cout << "--- (" << t.p[1].nx << ", " << t.p[1].ny << ", " << t.p[1].nz << ")";
     //    std::cout << "--- (" << t.p[2].nx << ", " << t.p[2].ny << ", " << t.p[2].nz << ")" << std::endl;
     //}
-}
-
-void MarchingCubeMesher::render() {
-    // bind Vertex Array
-    glBindVertexArray(_vao);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-
-    // draw
-    glDrawArrays(GL_TRIANGLES, 0, m_totalTriangles * 3);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDisableVertexAttribArray(0);
-    glBindVertexArray(0);
-
+    return v_triangles;
 }
 
 int MarchingCubeMesher::polygonise(Gridcell grid, float isolevel, Triangle *triangles) {
@@ -210,15 +168,15 @@ glm::vec3 MarchingCubeMesher::gradient(glm::vec3 p) {
     float D = 0.1;
     // x
     glm::vec3 dx = glm::vec3(D, 0.0, 0.0);
-    d.x = density(p + dx) - density(p - dx);
+    d.x = m_density(p + dx) - m_density(p - dx);
 
     // y
     glm::vec3 dy = glm::vec3(0.0, D, 0.0);
-    d.y = density(p + dy) - density(p - dy);
+    d.y = m_density(p + dy) - m_density(p - dy);
 
     // z
     glm::vec3 dz = glm::vec3(0.0, 0.0, D);
-    d.z = density(p + dz) - density(p - dz);
+    d.z = m_density(p + dz) - m_density(p - dz);
 
     d = d / (2 * D);
 
@@ -227,7 +185,7 @@ glm::vec3 MarchingCubeMesher::gradient(glm::vec3 p) {
 
 
 MarchingCubeMesher::~MarchingCubeMesher() {
-    delete _triangles;
+//    delete _triangles;
 
     for (int i = 0; i < 32; i++) {
         for (int j = 0; j < 32; j++) {

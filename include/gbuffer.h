@@ -4,12 +4,11 @@
 #include <GL/glew.h>
 #include <memory>
 #include "shader.h"
-
+#include "types.h"
 enum GBUFFER_TEXTURE_TYPE {
     GBUFFER_TEXTURE_TYPE_POSITION,
     GBUFFER_TEXTURE_TYPE_NORMAL,
-    GBUFFER_TEXTURE_TYPE_DIFFUSE,
-    GBUFFER_TEXTURE_TYPE_TEXCOORD,
+    GBUFFER_TEXTURE_TYPE_IDENTIFIER,
     GBUFFER_NUM_TEXTURES
 };
 
@@ -29,7 +28,7 @@ private:
     GLuint _fbo;
     GLuint _textures[GBUFFER_NUM_TEXTURES];
     GLuint _depth_texture;
-    int _width, _height;
+    uint32 _width, _height;
 };
 
 #endif

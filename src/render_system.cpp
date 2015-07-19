@@ -28,20 +28,19 @@ RenderSystem::RenderSystem() {
     _settings->depthBits = 24;
     _settings->stencilBits = 8;
 	_settings->antialiasingLevel = 8;
+
     _frames_counter = 0;
     _t_total = 0.0;
     _window.reset(new sf::Window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32), "OpenGL", sf::Style::Titlebar | sf::Style::Close, *_settings));
-//    _blockShader.reset(new Shader("shaders/block.vert", "shaders/block.frag"));
     _clear_shader.reset(new Shader("shaders/deferred/clear.vert", "shaders/deferred/clear.frag"));
-    _geometry_shader.reset(new Shader("shaders/deferred/geometry.vert", "shaders/deferred/geometry.frag"));
-    _lighting_shader.reset(new Shader("shaders/deferred/lighting.vert", "shaders/deferred/lighting.frag"));
+    _lighting_shader.reset(new Shader("shaders/deferred/lighting.vert", "shaders/terrain/lighting.frag"));
     _pass_shader.reset(new Shader("shaders/pass.vert", "shaders/pass.frag"));
-    _simple_shader.reset(new Shader("shaders/simple.vert", "shaders/simple.frag"));
     _chunkManager.reset(new ChunkManager());
 	_quad.reset(new Quad);
-	_gbuffer.reset(new GBuffer(WINDOW_WIDTH, WINDOW_HEIGHT));
-    _mcm.reset(new MarchingCubeMesher);
+	m_GBuffer.reset(new GBuffer(WINDOW_WIDTH, WINDOW_HEIGHT));
+    m_CBuffer.reset(new CBuffer(WINDOW_WIDTH, WINDOW_HEIGHT));
     _camera.reset(new Camera);
+    m_terrainGRenderStage.reset(new TerrainRenderStage);
 }
 
 void RenderSystem::init() {
@@ -68,42 +67,26 @@ void RenderSystem::init() {
     // clear shader
     _clear_shader->bindFragDataLocation(0, "OutWorldPos");
     _clear_shader->bindFragDataLocation(1, "OutNormal");
-    _clear_shader->bindFragDataLocation(2, "OutDiffuse");
-    _clear_shader->bindFragDataLocation(3, "OutTexCoord");
     _clear_shader->compile();
 
-    // geometry shader
-    _geometry_shader->bindFragDataLocation(0, "OutWorldPos");
-    _geometry_shader->bindFragDataLocation(1, "OutNormal");
-    _geometry_shader->bindFragDataLocation(2, "OutDiffuse");
-    _geometry_shader->bindFragDataLocation(3, "OutTexCoord");
-    _geometry_shader->compile();
-    _geometry_shader->use();
-    _gbuffer->init();
+    m_GBuffer->init();
+    m_CBuffer->init();
 
-    _geometry_shader->attachCamera(_camera);
 
     // Set up projection
-    _proj = glm::perspective(FOV, ((float)WINDOW_WIDTH) / ((float)WINDOW_HEIGHT), 0.1f, 1000.0f);
-    GLint uniProj = _geometry_shader->getUniformLocation("proj");
-    glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(_proj));
-    
+    m_renderContext.projection = glm::perspective(FOV, ((float)WINDOW_WIDTH) / ((float)WINDOW_HEIGHT), 0.1f, 1000.0f);
     // Set up model
-    _world = glm::mat4();
-    GLint uniModel = _geometry_shader->getUniformLocation("world");
-    glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(_world));
+    m_renderContext.world = glm::mat4();
+    m_renderContext.window.height = WINDOW_HEIGHT;
+    m_renderContext.window.width = WINDOW_WIDTH;
 
-    // Set up diffuse
-    glm::vec3 diffuse = glm::vec3(1.0, 1.0, 1.0);
-    GLint uni_diffuse = _geometry_shader->getUniformLocation("diffuse");
-    glUniform3fv(uni_diffuse, 1, glm::value_ptr(diffuse));
-
-    _geometry_shader->unuse();
 
     //_chunkManager->init();
     _quad->init();
 
-    _mcm->init();
+
+    m_terrainGRenderStage->init(m_GBuffer, m_CBuffer, m_renderContext, _camera);
+    m_terrainGRenderStage->generateTerrain();
 
     glCheckError();
 
@@ -112,32 +95,29 @@ void RenderSystem::init() {
 void RenderSystem::update(double delta_t) {
     // clear pass
     _clear_shader->use();
-    _gbuffer->use();
+    m_GBuffer->use();
+
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
     _quad->draw();
-    _gbuffer->unuse();
+    m_GBuffer->unuse();
     _clear_shader->unuse();
 
-    // geometry pass
-    _geometry_shader->use();
-    _gbuffer->use();
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
+    // render all geometry components
+    m_terrainGRenderStage->render();
 
-    // render all components
-    //_chunkManager->render();
-    _mcm->render();
-	_gbuffer->unuse();
-    _geometry_shader->unuse();
 
     // lighting pass
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
     _lighting_shader->use();
-    _gbuffer->read(_lighting_shader);
+    m_GBuffer->read(_lighting_shader);
+    m_CBuffer->read(_lighting_shader, 3);
     _quad->draw();
     _lighting_shader->unuse();
-    _gbuffer->unread();
+    m_GBuffer->unread();
+    m_CBuffer->unread();
 
     _window->display();
 

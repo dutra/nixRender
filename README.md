@@ -9,6 +9,7 @@ Requirements
 - SFML
 - GLM
 - SOIL
+- libnoise
 
 Compiling
 ------------

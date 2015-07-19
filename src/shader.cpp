@@ -15,7 +15,8 @@
 #include "error.h"
 
 Shader::Shader(std::string path_vert, std::string path_frag, std::string path_common) {
-
+    m_path_vert = path_vert;
+    m_path_frag = path_frag;
     //std::cout << reset << "Loading Vertex Shader " << path_vert << std::endl;
 
     if (path_common.length() > 0) { // test if common shader exists
@@ -83,7 +84,7 @@ void Shader::compile() {
         std::vector<char> errorLog(maxLength);
         glGetShaderInfoLog(_vertex_shader, maxLength, &maxLength, &errorLog[0]);
         std::string error_log_str(errorLog.begin(), errorLog.end());
-        std::cout << red << "ERROR: Compiling Vertex Shader " << error_log_str << std::endl;
+        std::cout << red << "ERROR: Compiling Vertex Shader " << m_path_vert << std::endl << error_log_str << std::endl;
 
         //Exit with failure.
         glDeleteShader(_vertex_shader); //Don't leak the shader.
@@ -107,7 +108,7 @@ void Shader::compile() {
 
         std::string error_log_str(errorLog.begin(), errorLog.end());
 
-        std::cout << red << "ERROR: Compiling FRAGMENT Shader:" << std::endl << error_log_str << std::endl;
+        std::cout << red << "ERROR: Compiling FRAGMENT Shader:" << m_path_frag << std::endl << error_log_str << std::endl;
 
         //Exit with failure.
         glDeleteShader(_fragment_shader); //Don't leak the shader.
@@ -137,7 +138,7 @@ void Shader::use() {
     glUseProgram(_shader_program);
 
     if (_camera) {
-        GLint uniView = getUniformLocation("view");
+        GLint uniView = getUniformLocation("unView");
         glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(_camera->getViewMatrix()));
     }
 
@@ -205,11 +206,11 @@ void Shader::setTextureUniform(std::string name, GLuint value) {
             assert(false);
     }
 
-    if (loc == -1) {
-        std::cout << error << "ERROR: Texture uniform " << name << " could not be found." << std::endl;
+    /*if (loc == -1) {
+        std::cout << error << "ERROR at Shader " << m_path_frag << ": Texture uniform " << name << " could not be found." << std::endl;
         return;
         assert(false);
-    }
+    }*/
     glProgramUniform1i(getProgram(), loc, value);
 
 
@@ -218,10 +219,10 @@ void Shader::setTextureUniform(std::string name, GLuint value) {
 GLint Shader::getUniformLocation(std::string name) {
 
     GLint loc = glGetUniformLocation(getProgram(), name.c_str());
-//     if (loc == -1) {
-//         std::cout << error << "ERROR: Uniform " << name << " could not be found." << std::endl;
-//         assert(false);
-//     }
+     if (loc == -1) {
+         std::cout << error << "ERROR: Uniform " << name << " could not be found." << std::endl;
+         throw;
+     }
 
     return loc;
 

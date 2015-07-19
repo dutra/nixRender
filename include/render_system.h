@@ -13,14 +13,14 @@
 
 #include "color.h"
 #include "shader.h"
-#include "frame_buffer.h"
 #include "chunk_manager.h"
 #include "types.h"
 #include "gbuffer.h"
-#include "cube.h"
+#include "cbuffer.h"
 #include "quad.h"
-#include "marching_cube_mesher.h"
 #include "camera.h"
+#include "terrain_render_stage.h"
+#include "context.h"
 
 class RenderSystem {
 public:
@@ -40,17 +40,17 @@ private:
     void countFPS(double delta_t);
     //std::shared_ptr<Shader> _blockShader;
     std::shared_ptr<Shader> _clear_shader;
-    std::shared_ptr<Shader> _geometry_shader;
-	std::shared_ptr<Shader> _lighting_shader;
+ 	std::shared_ptr<Shader> _lighting_shader;
     std::shared_ptr<Shader> _pass_shader;
     std::shared_ptr<Shader> _simple_shader;
     std::unique_ptr<ChunkManager> _chunkManager;
-    std::unique_ptr<GBuffer> _gbuffer;
-	glm::mat4 _view, _proj, _world;
-    glm::vec3 _view_pos;
+    std::shared_ptr<GBuffer> m_GBuffer;
+    std::shared_ptr<CBuffer> m_CBuffer;
+
     std::unique_ptr<Quad> _quad;
-    std::unique_ptr<MarchingCubeMesher> _mcm;
     std::shared_ptr<Camera> _camera;
+    std::unique_ptr<TerrainRenderStage> m_terrainGRenderStage;
+    RenderContext m_renderContext;
 };
 
 

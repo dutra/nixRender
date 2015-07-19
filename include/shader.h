@@ -30,6 +30,7 @@ private:
     GLuint _shader_program;
     std::map<int, std::string> _fragDataLocation;
     std::shared_ptr<Camera> _camera;
+    std::string m_path_frag, m_path_vert;
 };
 
 #endif // SHADER_H
