@@ -4,6 +4,8 @@
 #include <iostream>
 #include <functional>
 
+#include "grider.h"
+
 void MarchingCubeMesher::init(std::function<float(glm::vec3)> density) {
     m_density = density;
   
@@ -16,9 +18,9 @@ std::vector<Triangle> MarchingCubeMesher::generateTriagles(Gridcell ***grid) {
     Triangle triangles[10];
 
 
-    for (int i = 0; i < 32; i++) {
-        for (int j = 0; j < 32; j++) {
-            for (int k = 0; k < 32; k++) {
+    for (int i = 0; i < GRID_TOTAL_SIZE_X; i++) {
+        for (int j = 0; j < GRID_TOTAL_SIZE_Y; j++) {
+            for (int k = 0; k < GRID_TOTAL_SIZE_Z; k++) {
 
                 n = polygonise(grid[i][j][k], 0, triangles);
                 m_totalTriangles += n;
