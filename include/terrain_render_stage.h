@@ -13,6 +13,7 @@
 #include "world_types.h"
 #include "terrain_generator.h"
 #include "marching_cube_mesher.h"
+#include "grider.h"
 #include "quad.h"
 
 class TerrainRenderStage {
@@ -30,6 +31,7 @@ private:
     std::vector<Triangle> m_triangles;
     std::unique_ptr<TerrainGenerator> m_terrainGenerator;
     std::unique_ptr<MarchingCubeMesher> m_mcMesher;
+    std::unique_ptr<Grider> m_grider;
     std::unique_ptr<Quad> m_quad;
     GLuint _vao;
     GLuint _vbo;

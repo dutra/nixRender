@@ -9,6 +9,7 @@ TerrainRenderStage::TerrainRenderStage() {
     m_colorShader.reset(new Shader("shaders/terrain/color.vert", "shaders/terrain/color.frag"));
     m_terrainGenerator.reset(new TerrainGenerator);
     m_mcMesher.reset(new MarchingCubeMesher);
+    m_grider.reset(new Grider);
     m_quad.reset(new Quad);
 }
 
@@ -39,16 +40,22 @@ void TerrainRenderStage::init(std::shared_ptr<GBuffer> gbuffer, std::shared_ptr<
 
     m_terrainGenerator->init();
     
+    m_grider->init([=](glm::vec3 position) {
+        return m_terrainGenerator->getDensity(position);
+    });
+    
+
     m_mcMesher->init([=](glm::vec3 position) {
         return m_terrainGenerator->getDensity(position);
     });
 
+    
     m_quad->init();
 }
 
 void TerrainRenderStage::generateTerrain() {
 
-    m_triangles = m_mcMesher->generateTriagles();
+    m_triangles = m_mcMesher->generateTriagles(m_grider->getGrid());
 
 
     glGenVertexArrays(1, &_vao);
@@ -77,8 +84,6 @@ void TerrainRenderStage::generateTerrain() {
         GL_FALSE, // normalized
         sizeof(VertexNormal), // stride (byte offset between consecutive generic vertex attributes)
         (void*)(sizeof(glm::vec3))); // pointer (offset of the first component of the first generic vertex attribute)
-
-
 
 }
 

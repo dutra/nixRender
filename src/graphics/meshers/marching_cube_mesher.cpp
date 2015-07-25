@@ -6,56 +6,21 @@
 
 void MarchingCubeMesher::init(std::function<float(glm::vec3)> density) {
     m_density = density;
-
-    generateGrid();
   
 }
 
-void MarchingCubeMesher::generateGrid() {
-    _grid = new Gridcell**[32];
-    for (int i = 0; i < 32; i++) {
-        _grid[i] = new Gridcell*[32];
-        for (int j = 0; j < 32; j++) {
-            _grid[i][j] = new Gridcell[32];
-        }
-    }
-
-    for (int i = 0; i < 32; i++) {
-        for (int j = 0; j < 32; j++) {
-            for (int k = 0; k < 32; k++) {
-                Gridcell& cell = _grid[i][j][k];
-                cell.p[0] = glm::vec3(0, 0, 0);
-                cell.p[1] = glm::vec3(1, 0, 0);
-                cell.p[2] = glm::vec3(1, 0, 1);
-                cell.p[3] = glm::vec3(0, 0, 1);
-                cell.p[4] = glm::vec3(0, 1, 0);
-                cell.p[5] = glm::vec3(1, 1, 0);
-                cell.p[6] = glm::vec3(1, 1, 1);
-                cell.p[7] = glm::vec3(0, 1, 1);
-
-                for (int u = 0; u < 8; u++) {
-                    cell.p[u] += glm::vec3(i, j, k);
-                    cell.val[u] = m_density(cell.p[u]);
-//                    std::cout << "(" << cell.p[u].x << "," << cell.p[u].y << "," << cell.p[u].z << "): " << cell.val[u] << " ";
-                }
-            }
-        }
-    }
-}
-
-std::vector<Triangle> MarchingCubeMesher::generateTriagles() {
+std::vector<Triangle> MarchingCubeMesher::generateTriagles(Gridcell ***grid) {
     std::vector<Triangle> v_triangles;
     m_totalTriangles = 0;
     int n = 0;
     Triangle triangles[10];
 
-    generateGrid();
 
     for (int i = 0; i < 32; i++) {
         for (int j = 0; j < 32; j++) {
             for (int k = 0; k < 32; k++) {
 
-                n = polygonise(_grid[i][j][k], 0, triangles);
+                n = polygonise(grid[i][j][k], 0, triangles);
                 m_totalTriangles += n;
                 for (int l = 0; l < n; l++)
                     v_triangles.emplace_back(triangles[l]);
@@ -187,13 +152,7 @@ glm::vec3 MarchingCubeMesher::gradient(glm::vec3 p) {
 MarchingCubeMesher::~MarchingCubeMesher() {
 //    delete _triangles;
 
-    for (int i = 0; i < 32; i++) {
-        for (int j = 0; j < 32; j++) {
-            delete _grid[i][j];
-        }
-        delete _grid[i];
-    }
-    delete _grid;
+
 }
 
 
